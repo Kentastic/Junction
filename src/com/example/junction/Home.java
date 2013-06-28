@@ -18,5 +18,4 @@ public class Home extends Activity {
 		getMenuInflater().inflate(R.menu.home, menu);
 		return true;
 	}
-
 }
