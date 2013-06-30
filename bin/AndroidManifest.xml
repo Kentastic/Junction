@@ -24,19 +24,46 @@
         </activity>
         <activity
             android:name="com.example.junction.SearchActivity"
-            android:label="@string/title_activity_search" >
+            android:label="@string/title_activity_search"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name="com.example.junction.MyLocationsActivity"
-            android:label="@string/title_activity_my_locations" >
+            android:label="@string/title_activity_my_locations"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name="com.example.junction.LocationActivity"
-            android:label="@string/title_activity_location" >
+            android:label="@string/title_activity_location"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name="com.example.junction.CameraActivity"
             android:label="@string/title_activity_camera" >
+        </activity>
+        <activity
+            android:name="com.example.junction.SearchActivityByName"
+            android:label="@string/title_activity_search_activity_by_name" >
+        </activity>
+        <activity
+            android:name="com.example.junction.SearchActivityByLocation"
+            android:label="@string/title_activity_search_activity_by_location" >
+        </activity>
+        <activity
+            android:name="com.example.junction.MyLocationGroups"
+            android:label="@string/title_activity_my_location_groups" >
+        </activity>
+        <activity
+            android:name="com.example.junction.MyLocationsStarred"
+            android:label="@string/title_activity_my_locations_starred" >
+        </activity>
+        <activity
+            android:name="com.example.junction.LocationsMain"
+            android:label="@string/title_activity_locations_main" >
+        </activity>
+        <activity
+            android:name="com.example.junction.LocationsHistogram"
+            android:label="@string/title_activity_locations_histogram" >
         </activity>
     </application>
 

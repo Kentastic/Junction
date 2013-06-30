@@ -2,6 +2,7 @@ package com.example.junction;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 
 public class HomeActivity extends Activity {
@@ -10,6 +11,9 @@ public class HomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+		
+		Intent i = new Intent(this, LocationActivity.class);
+		startActivity(i);
 	}
 
 	@Override

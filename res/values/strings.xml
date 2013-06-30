@@ -8,5 +8,11 @@
     <string name="title_activity_my_locations">MyLocationsActivity</string>
     <string name="title_activity_location">LocationActivity</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_search_activity_by_name">SearchActivityByName</string>
+    <string name="title_activity_search_activity_by_location">SearchActivityByLocation</string>
+    <string name="title_activity_my_location_groups">MyLocationGroups</string>
+    <string name="title_activity_my_locations_starred">MyLocationsStarred</string>
+    <string name="title_activity_locations_main">LocationsMain</string>
+    <string name="title_activity_locations_histogram">LocationsHistogram</string>
 
 </resources>
