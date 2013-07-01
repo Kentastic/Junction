@@ -12,7 +12,9 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
-		Intent i = new Intent(this, LocationActivity.class);
+//		Intent i = new Intent(this, LocationActivity.class);
+//		startActivity(i);
+		Intent i = new Intent(this, CameraActivity.class);
 		startActivity(i);
 	}
 
