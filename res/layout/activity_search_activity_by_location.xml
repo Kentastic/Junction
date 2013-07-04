@@ -9,8 +9,26 @@
     tools:context=".SearchActivityByLocation" >
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/nearest_location" />
+
+    <TextView
+        android:id="@+id/coordinates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="42dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/coordinates"
+        android:layout_centerVertical="true"
+        android:text="TextView" />
 
 </RelativeLayout>

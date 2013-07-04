@@ -7,6 +7,9 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -65,6 +68,7 @@
             android:name="com.example.junction.LocationsHistogram"
             android:label="@string/title_activity_locations_histogram" >
         </activity>
+        <uses-library android:name="com.google.android.maps"/>
     </application>
 
 </manifest>

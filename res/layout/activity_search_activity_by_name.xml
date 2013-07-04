@@ -8,9 +8,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SearchActivityByName" >
 
-    <TextView
+    <EditText
+        android:id="@+id/userEntry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/goButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/userEntry"
+        android:layout_centerHorizontal="true"
+        android:text="@string/goButton" />
+
+    <TextView
+        android:id="@+id/coordinates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/goButton"
+        android:layout_below="@+id/goButton"
+        android:layout_marginTop="91dp"
+        android:text="TextView" />
 
 </RelativeLayout>
