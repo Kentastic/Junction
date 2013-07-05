@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -54,10 +55,12 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
 		
 		myGeocoder = new Geocoder (this, Locale.CANADA);
-		userInput = userEntry.toString();
-		userInput = " ";
+		//userInput = userEntry.toString();
+		//userInput = "";
 		coordinates.setText("Address: \n");
 		//getPlace(userInput);
+		
+		userEntry.addTextChangedListener(this);
 	}
 		
 	private void getPlace(String string) {
@@ -116,10 +119,11 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 	
 	@Override
 	public void afterTextChanged(Editable editText) {
-		if (editText == userEntry){
-			userInput = userEntry.toString();
+		//if (editText == userEntry.getText()){
+			userInput = userEntry.getText().toString();
+			Log.i("TEXT CHANGED", "text changed");
 			//getPlace(userInput);
-		}
+		//}
 	}
 
 	@Override
@@ -142,7 +146,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 			if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)){
 				InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				in.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-				getPlace(userInput);
+				//getPlace(userInput);
 				return true;
 			}
 		}
@@ -151,11 +155,11 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 
 	@Override
 	public void onClick(View v) {
-		//if (v == goButton){
+		if (v == goButton){
 			//if(userInput != ""){
-				userInput = userEntry.toString();
+				//userInput = userEntry.toString();
 				getPlace(userInput);
 			//}
-		//}
+		}
 	}
 }

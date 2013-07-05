@@ -21,6 +21,7 @@ import android.widget.TextView;
 public class SearchActivityByLocation extends Activity implements LocationListener {
 	
 	LocationManager LocManager;
+	Location userLocation;
 	TextView userLocationTextView, addressTextView;	 
  	String geocode;
  	Geocoder myGeocoder;
@@ -39,10 +40,10 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
 		
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
-		Location userLocation = LocManager.getLastKnownLocation(bestProvider);
+		userLocation = LocManager.getLastKnownLocation(bestProvider);
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		
-		LocManager.requestLocationUpdates(bestProvider, 300000, 20.0f, this);
+		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
 		
 		
 		myGeocoder = new Geocoder(this, Locale.CANADA);
@@ -60,7 +61,7 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Location userLocation = location;
+		userLocation = location;
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		
 	}
