@@ -16,5 +16,7 @@
     <string name="title_activity_locations_histogram">LocationsHistogram</string>
     <string name="nearest_location">Here are the nearest Locations based on your current location:</string>
     <string name="goButton">Go!</string>
+    <string name="searchActivity">Search for Location Groups</string>
+    <string name="cameraActivity">Go to Camera Screen</string>
 
 </resources>

@@ -8,15 +8,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
 import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -29,6 +35,8 @@ public class CameraActivity extends Activity {
     private CameraPreview mCameraPreview;
     private ImageView image;
     private SeekBar seek;
+    Parameters parameters;
+    Display display;
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
@@ -44,8 +52,18 @@ public class CameraActivity extends Activity {
 		
 		image.setAlpha(127);
         image.invalidate();
+        
+        mCamera = getCameraInstance();  
+        parameters = mCamera.getParameters();
+        display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();  
 		
-		mCamera = getCameraInstance();
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+		int height = displaymetrics.heightPixels;
+		int width = displaymetrics.widthPixels;
+		
+		surfaceChanged(width, height);
+		
         mCameraPreview = new CameraPreview(this, mCamera);
         //FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mCameraPreview);
@@ -132,5 +150,33 @@ public class CameraActivity extends Activity {
         File mediaFile;
         mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
         return mediaFile;
+    }
+    
+    public void surfaceChanged(int width, int height)
+    {            
+    	
+        if(display.getRotation() == Surface.ROTATION_0)
+        {
+            parameters.setPreviewSize(height, width);                           
+            mCamera.setDisplayOrientation(90);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_90)
+        {
+            parameters.setPreviewSize(width, height);                           
+        }
+
+        if(display.getRotation() == Surface.ROTATION_180)
+        {
+            parameters.setPreviewSize(height, width);               
+        }
+
+        if(display.getRotation() == Surface.ROTATION_270)
+        {
+            parameters.setPreviewSize(width, height);
+            mCamera.setDisplayOrientation(180);
+        }
+
+        mCamera.setParameters(parameters);                     
     }
 }

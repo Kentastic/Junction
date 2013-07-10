@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.android.maps.MapView;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import android.location.Address;
 import android.location.Criteria;
@@ -25,7 +29,6 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 	TextView userLocationTextView, addressTextView;	 
  	String geocode;
  	Geocoder myGeocoder;
- 	MapView userMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 		userLocationTextView = (TextView) findViewById(R.id.coordinates);
 		
 		Criteria myCriteria = new Criteria();
-		myCriteria.setAccuracy(Criteria.ACCURACY_FINE);
+		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
 		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
 		
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
@@ -101,5 +104,13 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 		// TODO Auto-generated method stub
 		
 	}
+
+//	@Override
+//	public void onStatusChanged(String provider, int status, Bundle extras) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+
+	
 
 }

@@ -27,6 +27,7 @@ public class CameraPreview extends SurfaceView implements
         try {
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
+            //mCamera.setDisplayOrientation(90);
         } catch (IOException e) {
             // left blank for now
         }

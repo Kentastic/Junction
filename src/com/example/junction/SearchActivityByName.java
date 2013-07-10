@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -42,6 +43,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		userEntry = (EditText) findViewById(R.id.userEntry);
+		userEntry.clearFocus();
 		coordinates = (TextView) findViewById(R.id.coordinates);
 		goButton = new Button(this);
 		goButton = (Button) findViewById(R.id.goButton);
@@ -157,7 +159,8 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 	public void onClick(View v) {
 		if (v == goButton){
 			//if(userInput != ""){
-				//userInput = userEntry.toString();
+				InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				mgr.hideSoftInputFromWindow(userEntry.getWindowToken(), 0);
 				getPlace(userInput);
 			//}
 		}
