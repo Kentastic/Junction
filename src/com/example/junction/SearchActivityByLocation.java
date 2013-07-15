@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.android.gms.maps.MapFragment;
+
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SearchActivityByLocation extends Activity implements LocationListener {
@@ -47,12 +50,21 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
-		
-		
+	
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		addressTextView = (TextView) findViewById(R.id.address);
 		
 		getAddress(userLocation);
+		
+		MapFragment fragment = new MapFragment();
+		
+	
+		/*
+		MapFragment mMapFragment = MapFragment.newInstance();
+		FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+		fragmentTransaction.add(R.id.mapFragmentActivity, mMapFragment);
+		fragmentTransaction.commit();
+		*/
 	}
 
 	@Override
