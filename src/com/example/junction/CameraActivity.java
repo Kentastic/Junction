@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -53,7 +54,7 @@ public class CameraActivity extends Activity {
 		image.setAlpha(127);
         image.invalidate();
         
-        mCamera = getCameraInstance();  
+        mCamera = getCameraInstance();
         parameters = mCamera.getParameters();
         display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();  
 		
@@ -61,6 +62,8 @@ public class CameraActivity extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 		int height = displaymetrics.heightPixels;
 		int width = displaymetrics.widthPixels;
+		
+		
 		
 		surfaceChanged(width, height);
 		
@@ -122,18 +125,22 @@ public class CameraActivity extends Activity {
     PictureCallback mPicture = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            File pictureFile = getOutputMediaFile();
-            if (pictureFile == null) {
-                return;
-            }
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-
-            } catch (IOException e) {
-            }
+        	
+        	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+        	Date date = new Date();
+        	
+        	ContentValues cv = new ContentValues();
+        	cv.put("id", "123");
+        	cv.put("userId", "123");
+        	cv.put("locationId", "123");
+        	int i = 123;
+        	cv.put("subjectIndex", i);
+        	cv.put("dateTime", dateFormat.format(date));
+            cv.put("image", data);
+            HomeActivity.junctionDB.insert("subjects", null, cv);
+            
+            Log.e("test", "inserted");
+        	
         }
     };
 

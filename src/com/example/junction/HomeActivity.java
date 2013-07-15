@@ -1,15 +1,19 @@
 package com.example.junction;
 
+import java.util.Locale;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class HomeActivity extends Activity implements OnClickListener {
-	Button searchActivityButton, cameraActivityButton;
+	public Button searchActivityButton, cameraActivityButton;
+	public static SQLiteDatabase junctionDB;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +27,16 @@ public class HomeActivity extends Activity implements OnClickListener {
 		cameraActivityButton = new Button(this);
 		cameraActivityButton = (Button) findViewById(R.id.cameraActivityButton);
 		cameraActivityButton.setOnClickListener(this);
+		
+		junctionDB = openOrCreateDatabase("junction", SQLiteDatabase.CREATE_IF_NECESSARY, null);
+		junctionDB.setLocale(Locale.getDefault());
+		
+		
+		String sql = "DROP TABLE IF EXISTS 'subjects'";
+		junctionDB.execSQL(sql);
+		sql = "CREATE  TABLE IF NOT EXISTS `subjects` (`id` VARCHAR(45) NOT NULL ,`userId` VARCHAR(45) NOT NULL ,`locationId` VARCHAR(45) NOT NULL ,`subjectIndex` INT NOT NULL ,`dateTime` DATETIME NOT NULL ,`image` BLOB NOT NULL ,PRIMARY KEY (`id`) );";
+		
+		junctionDB.execSQL(sql);
 	}
 
 	@Override
