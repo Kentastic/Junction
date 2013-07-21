@@ -2,7 +2,8 @@
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    style="@style/Screen" >
 
     <FrameLayout
         android:id="@+id/camera_preview"

@@ -4,10 +4,10 @@
     <string name="app_name">Junction</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_search">SearchActivity</string>
-    <string name="title_activity_my_locations">MyLocationsActivity</string>
-    <string name="title_activity_location">LocationActivity</string>
-    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_search">Search for Locations</string>
+    <string name="title_activity_my_locations">My Locations</string>
+    <string name="title_activity_location">Location</string>
+    <string name="title_activity_camera">Camera</string>
     <string name="title_activity_search_activity_by_name">SearchActivityByName</string>
     <string name="title_activity_search_activity_by_location">SearchActivityByLocation</string>
     <string name="title_activity_my_location_groups">MyLocationGroups</string>

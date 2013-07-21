@@ -6,19 +6,24 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    style="@style/Screen"
     tools:context=".HomeActivity" >
 
     <Button
         android:id="@+id/searchActivityButton"
+        style="@style/Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="170dp"
+        android:background="@drawable/button_background"
         android:text="@string/searchActivity" />
 
     <Button
         android:id="@+id/cameraActivityButton"
+        style="@style/Button"
+        android:background="@drawable/roundbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/searchActivityButton"
