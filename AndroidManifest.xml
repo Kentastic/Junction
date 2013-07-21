@@ -3,31 +3,35 @@
     package="com.example.junction"
     android:versionCode="1"
     android:versionName="1.0" >
-    
+
     <permission
         android:name="com.example.mapdemo.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature"/>
-	<uses-permission android:name="com.example.junction.permission.MAPS_RECEIVE"/>
-    
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.junction.permission.MAPS_RECEIVE" />
+
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"/>
+        android:required="true" />
 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature android:name="android.hardware.camera" />
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>	
-	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -41,18 +45,15 @@
         </activity>
         <activity
             android:name="com.example.junction.SearchActivity"
-            android:label="@string/title_activity_search"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:label="@string/title_activity_search" >
         </activity>
         <activity
             android:name="com.example.junction.MyLocationsActivity"
-            android:label="@string/title_activity_my_locations"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:label="@string/title_activity_my_locations" >
         </activity>
         <activity
             android:name="com.example.junction.LocationActivity"
-            android:label="@string/title_activity_location"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:label="@string/title_activity_location" >
         </activity>
         <activity
             android:name="com.example.junction.CameraActivity"
@@ -82,9 +83,16 @@
             android:name="com.example.junction.LocationsHistogram"
             android:label="@string/title_activity_locations_histogram" >
         </activity>
+
         <meta-data
-   			android:name="com.google.android.maps.v2.API_KEY"
-    		android:value="AIzaSyAc-h4zGDJy-BiLaMzIjSmzj08YBkWomng"/>
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAc-h4zGDJy-BiLaMzIjSmzj08YBkWomng" />
+
+        <activity
+            android:name="com.example.junction.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
     </application>
 
 </manifest>
