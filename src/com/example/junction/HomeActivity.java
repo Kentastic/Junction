@@ -5,7 +5,9 @@ import java.util.Locale;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,11 +34,24 @@ public class HomeActivity extends Activity implements OnClickListener {
 		junctionDB.setLocale(Locale.getDefault());
 		
 		
-		String sql = "DROP TABLE IF EXISTS 'subjects'";
-		junctionDB.execSQL(sql);
-		sql = "CREATE  TABLE IF NOT EXISTS `subjects` (`id` VARCHAR(45) NOT NULL ,`userId` VARCHAR(45) NOT NULL ,`locationId` VARCHAR(45) NOT NULL ,`subjectIndex` INT NOT NULL ,`dateTime` DATETIME NOT NULL ,`image` BLOB NOT NULL ,PRIMARY KEY (`id`) );";
+		String subjectsTableSql = "DROP TABLE IF EXISTS 'subjects'";
+		junctionDB.execSQL(subjectsTableSql);
+		subjectsTableSql = "CREATE TABLE IF NOT EXISTS `subjects` (`id` VARCHAR(45) NOT NULL ,`userId` VARCHAR(45) NOT NULL ,`locationId` VARCHAR(45) NOT NULL ,`subjectIndex` INT NOT NULL ,`dateTime` DATETIME NOT NULL ,`image` BLOB NOT NULL ,PRIMARY KEY (`id`) );";
 		
-		junctionDB.execSQL(sql);
+		junctionDB.execSQL(subjectsTableSql);
+		
+		String userTableSql = "CREATE TABLE IF NOT EXISTS `users` (`id` VARCHAR(45) NOT NULL ,`name` VARCHAR(45) NOT NULL ,`password` VARCHAR(45) NOT NULL ,`locationIds` VARCHAR(45) NOT NULL ,PRIMARY KEY (`id`) );";
+		junctionDB.execSQL(userTableSql);
+		
+		String getUsers = "SELECT * FROM users;";
+		junctionDB.execSQL(getUsers);
+		
+		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
+		if (userData.getCount() == 0) {
+			Log.e("test", "NONE");
+		} else {
+			Log.e("test", "SOME");
+		}
 	}
 
 	@Override

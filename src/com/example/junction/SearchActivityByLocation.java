@@ -4,9 +4,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -20,15 +28,18 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SearchActivityByLocation extends Activity implements LocationListener {
+public class SearchActivityByLocation extends FragmentActivity implements LocationListener {
 	
 	LocationManager LocManager;
 	Location userLocation;
 	TextView userLocationTextView, addressTextView;	 
  	String geocode;
  	Geocoder myGeocoder;
+ 	MapFragment mapFragment;
+ 	GoogleMap myMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +58,22 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
-		
-		
+	
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		addressTextView = (TextView) findViewById(R.id.address);
 		
 		getAddress(userLocation);
+
+		//Map
+		
+		SupportMapFragment fragment = new SupportMapFragment();
+		getSupportFragmentManager().beginTransaction().add(R.id.mapFragmentActivity, fragment).commit();
+        fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+		myMap = fragment.getMap();
+		
+		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
+		myMap.setMyLocationEnabled(true);
+		myMap.setIndoorEnabled(true);
 	}
 
 	@Override
@@ -66,19 +87,23 @@ public class SearchActivityByLocation extends Activity implements LocationListen
 	public void onLocationChanged(Location location) {
 		userLocation = location;
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
-		
+		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 	}
 
 	private void getAddress(Location location) {
 		Address myAddress = new Address(Locale.CANADA);
 		
 		try {
-			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 2);
 			if (addresses != null)
 			{
 				myAddress = addresses.get(0);
 				geocode = myAddress.getAddressLine(0);
-				addressTextView.setText(geocode);						
+				
+				Address myAddress1 = addresses.get(1);
+				String geocode1 = myAddress.getAddressLine(0);
+
+				addressTextView.setText(geocode + "\n" + geocode1);						
 				}
 		}
 		

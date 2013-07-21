@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -125,6 +127,12 @@ public class CameraActivity extends Activity {
     PictureCallback mPicture = new PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+        	
+        	Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length);
+//        	ImageView image=new ImageView(this);
+        	image.setImageBitmap(bmp);
+        	
+            image.invalidate();
         	
         	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
         	Date date = new Date();
