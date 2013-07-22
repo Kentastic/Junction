@@ -16,6 +16,7 @@ import android.widget.Button;
 public class HomeActivity extends Activity implements OnClickListener {
 	public Button searchActivityButton, cameraActivityButton;
 	public static SQLiteDatabase junctionDB;
+	public static String username;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +37,23 @@ public class HomeActivity extends Activity implements OnClickListener {
 		
 		String subjectsTableSql = "DROP TABLE IF EXISTS 'subjects'";
 		junctionDB.execSQL(subjectsTableSql);
-		subjectsTableSql = "CREATE TABLE IF NOT EXISTS `subjects` (`id` VARCHAR(45) NOT NULL ,`userId` VARCHAR(45) NOT NULL ,`locationId` VARCHAR(45) NOT NULL ,`subjectIndex` INT NOT NULL ,`dateTime` DATETIME NOT NULL ,`image` BLOB NOT NULL ,PRIMARY KEY (`id`) );";
+		subjectsTableSql = "DROP TABLE IF EXISTS 'users'";
+		junctionDB.execSQL(subjectsTableSql);
+		subjectsTableSql = "DROP TABLE IF EXISTS 'locations'";
+		junctionDB.execSQL(subjectsTableSql);
+		
+		
+		subjectsTableSql = "CREATE TABLE IF NOT EXISTS `subjects` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,`username` VARCHAR(45) NOT NULL ,`locationId` VARCHAR(45) NOT NULL ,`subjectIndex` INT NOT NULL ,`dateTime` DATETIME NOT NULL ,`image` BLOB NOT NULL );";
 		
 		junctionDB.execSQL(subjectsTableSql);
 		
-		String userTableSql = "CREATE TABLE IF NOT EXISTS `users` (`id` VARCHAR(45) NOT NULL ,`name` VARCHAR(45) NOT NULL ,`password` VARCHAR(45) NOT NULL ,`locationIds` VARCHAR(45) NOT NULL ,PRIMARY KEY (`id`) );";
+		String userTableSql = "CREATE TABLE IF NOT EXISTS `users` (`name` VARCHAR(45) PRIMARY KEY NOT NULL ,`password` VARCHAR(45) NOT NULL ,`locationIds` VARCHAR(45) NOT NULL );";
 		junctionDB.execSQL(userTableSql);
 		
-		String getUsers = "SELECT * FROM users;";
-		junctionDB.execSQL(getUsers);
+		//change to Decimal(9,6)
+		String locationTableSql = "CREATE TABLE IF NOT EXISTS `locations` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,`title` VARCHAR(45) NOT NULL ,`locationName` VARCHAR(45) NOT NULL ,`latitude` VARCHAR(45) NOT NULL ,`longitude` VARCHAR(45) NOT NULL ,`backdrop` VARCHAR(45) NULL ,`currentSnapshot` BLOB NULL );";
+		junctionDB.execSQL(locationTableSql);
+
 		
 		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
 		if (userData.getCount() == 0) {
@@ -52,6 +61,8 @@ public class HomeActivity extends Activity implements OnClickListener {
 		} else {
 			Log.e("test", "SOME");
 		}
+		
+		
 	}
 
 	@Override
@@ -64,12 +75,27 @@ public class HomeActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v == searchActivityButton){
-			Intent i = new Intent(this, SearchActivity.class);
+//			Intent i = new Intent(this, SearchActivity.class);
+//			startActivity(i);
+			
+			//login activity
+//			Intent i = new Intent(this, LoginActivity.class);
+//			i.putExtra("registering", true); 
+//			startActivity(i);
+			
+			//location activity
+			Intent i = new Intent(this, LocationsMain.class);
+			//i.putExtra("locationId", "test"); 
 			startActivity(i);
 		}
 		
 		if(v == cameraActivityButton){
-			Intent i = new Intent(this, CameraActivity.class);
+//			Intent i = new Intent(this, CameraActivity.class);
+//			startActivity(i);
+			
+			//login activity
+			Intent i = new Intent(this, LoginActivity.class);
+			i.putExtra("registering", true); 
 			startActivity(i);
 		}
 		

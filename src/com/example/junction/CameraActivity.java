@@ -17,6 +17,7 @@ import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -30,10 +31,12 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class CameraActivity extends Activity {
 	
+	private int locationId;
 	private Camera mCamera;
     private CameraPreview mCameraPreview;
     private ImageView image;
@@ -50,8 +53,8 @@ public class CameraActivity extends Activity {
 		
 		Button captureButton = (Button) findViewById(R.id.button_capture);
 		FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-		image = (ImageView) findViewById(R.id.imageView1);
-		seek = (SeekBar) findViewById(R.id.seekBar1);
+		image = (ImageView) findViewById(R.id.HistogramImageView);
+		seek = (SeekBar) findViewById(R.id.HistogramSeekBar1);
 		
 		image.setAlpha(127);
         image.invalidate();
@@ -82,6 +85,11 @@ public class CameraActivity extends Activity {
         });
         
         seek.setOnSeekBarChangeListener(seekListener);
+        
+        Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			locationId = extras.getInt("locationId");
+		}
 	}
 	
 	OnSeekBarChangeListener seekListener = new OnSeekBarChangeListener() {
@@ -137,17 +145,62 @@ public class CameraActivity extends Activity {
         	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
         	Date date = new Date();
         	
+        	String whereClause = "locationId = ?";
+			String[] whereArgs = new String[] { Integer.toString(locationId) };
+			String orderClause = "subjectIndex DESC";
+			
+			int currentSubjectIndex = 0;
+			
+			Cursor subjectData = HomeActivity.junctionDB.query("subjects", null, whereClause , whereArgs, null, null, orderClause);
+			Log.e("test", "first");
+			if (subjectData.getCount() != 0) {
+				int subjectIndexColumn = subjectData.getColumnIndex("subjectIndex");
+				subjectData.moveToFirst();
+				currentSubjectIndex = subjectData.getInt(subjectIndexColumn);
+				
+//				subjectData.moveToFirst();
+//				while (subjectData.isAfterLast() == false) 
+//				{
+//					int rowSubjectIndex = subjectData.getInt(subjectIndexColumn);
+//				    if (rowSubjectIndex > currentSubjectIndex) {
+//				    	currentSubjectIndex = rowSubjectIndex;
+//				    }
+//				}
+				currentSubjectIndex++;
+			}
+        	
         	ContentValues cv = new ContentValues();
-        	cv.put("id", "123");
-        	cv.put("userId", "123");
-        	cv.put("locationId", "123");
-        	int i = 123;
-        	cv.put("subjectIndex", i);
+        	cv.put("username", HomeActivity.username);
+        	cv.put("locationId", locationId);
+        	cv.put("subjectIndex", currentSubjectIndex);
         	cv.put("dateTime", dateFormat.format(date));
             cv.put("image", data);
             HomeActivity.junctionDB.insert("subjects", null, cv);
             
-            Log.e("test", "inserted");
+            whereClause = "name = ?";
+			whereArgs = new String[] { HomeActivity.username };
+			
+			Cursor userData = HomeActivity.junctionDB.query("users", null, whereClause , whereArgs, null, null, null);
+			Log.e("test", "second");
+			if (userData.getCount() != 0) {
+				Log.e("test", "third");
+				userData.moveToFirst();
+				int locationIdsColumn = userData.getColumnIndex("locationIds");
+				String locationIds = userData.getString(locationIdsColumn);
+				
+				
+				if (locationIds.length() == 0) {
+					locationIds = Integer.toString(locationId);
+				} else {
+					locationIds += "," + Integer.toString(locationId);
+				}
+	            
+	            cv = new ContentValues();
+	        	cv.put("locationIds", locationIds);
+	            HomeActivity.junctionDB.update("users", cv, whereClause, whereArgs);
+			} else {
+				Toast.makeText(getApplicationContext(), "You need to login before adding to a location", Toast.LENGTH_LONG).show();
+			}
         	
         }
     };

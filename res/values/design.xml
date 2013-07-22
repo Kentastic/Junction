@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="Screen">
+        <item name="android:background">#BFFFFA</item>
+    </style>
+    
+    <style name="Font">
+        <item name="android:textColor">#027570</item>
+    </style>
+    
+    <style name="Button">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">10dp</item>   
+    </style>
+</resources>
