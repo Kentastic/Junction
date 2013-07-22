@@ -3,7 +3,11 @@ package com.example.junction;
 import java.util.Locale;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +22,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 	public static SQLiteDatabase junctionDB;
 	public static String username;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,11 +41,11 @@ public class HomeActivity extends Activity implements OnClickListener {
 		
 		
 		String subjectsTableSql = "DROP TABLE IF EXISTS 'subjects'";
-		junctionDB.execSQL(subjectsTableSql);
-		subjectsTableSql = "DROP TABLE IF EXISTS 'users'";
-		junctionDB.execSQL(subjectsTableSql);
-		subjectsTableSql = "DROP TABLE IF EXISTS 'locations'";
-		junctionDB.execSQL(subjectsTableSql);
+//		junctionDB.execSQL(subjectsTableSql);
+//		subjectsTableSql = "DROP TABLE IF EXISTS 'users'";
+//		junctionDB.execSQL(subjectsTableSql);
+//		subjectsTableSql = "DROP TABLE IF EXISTS 'locations'";
+//		junctionDB.execSQL(subjectsTableSql);
 		
 		
 		subjectsTableSql = "CREATE TABLE IF NOT EXISTS `subjects` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,`username` VARCHAR(45) NOT NULL ,`locationId` VARCHAR(45) NOT NULL ,`subjectIndex` INT NOT NULL ,`dateTime` DATETIME NOT NULL ,`image` BLOB NOT NULL );";
@@ -54,6 +59,11 @@ public class HomeActivity extends Activity implements OnClickListener {
 		String locationTableSql = "CREATE TABLE IF NOT EXISTS `locations` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,`title` VARCHAR(45) NOT NULL ,`locationName` VARCHAR(45) NOT NULL ,`latitude` VARCHAR(45) NOT NULL ,`longitude` VARCHAR(45) NOT NULL ,`backdrop` VARCHAR(45) NULL ,`currentSnapshot` BLOB NULL );";
 		junctionDB.execSQL(locationTableSql);
 
+		
+		if (username == null) {
+			DialogFragment newFragment = new LoginDialogFragment();
+	        newFragment.show(getFragmentManager(),"Login");
+		}
 		
 		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
 		if (userData.getCount() == 0) {
@@ -78,11 +88,6 @@ public class HomeActivity extends Activity implements OnClickListener {
 //			Intent i = new Intent(this, SearchActivity.class);
 //			startActivity(i);
 			
-			//login activity
-//			Intent i = new Intent(this, LoginActivity.class);
-//			i.putExtra("registering", true); 
-//			startActivity(i);
-			
 			//location activity
 			Intent i = new Intent(this, LocationsMain.class);
 			//i.putExtra("locationId", "test"); 
@@ -90,12 +95,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 		}
 		
 		if(v == cameraActivityButton){
-//			Intent i = new Intent(this, CameraActivity.class);
-//			startActivity(i);
-			
-			//login activity
-			Intent i = new Intent(this, LoginActivity.class);
-			i.putExtra("registering", true); 
+			Intent i = new Intent(this, CameraActivity.class);
 			startActivity(i);
 		}
 		

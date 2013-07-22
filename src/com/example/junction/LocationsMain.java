@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -56,10 +58,13 @@ public class LocationsMain extends Activity {
 	        	cv.put("latitude", "test");
 	        	cv.put("longitude", "test");
 	            HomeActivity.junctionDB.insert("locations", null, cv);
+	            
+	            Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
+	            locationId = locationData.getCount();
 			}
 			
 			Intent i = new Intent(LocationsMain.this, CameraActivity.class);
-			i.putExtra("locationId", "test"); 
+			i.putExtra("locationId", locationId); 
 			startActivity(i);
 		}
 	};
