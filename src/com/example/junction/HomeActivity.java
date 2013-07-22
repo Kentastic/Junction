@@ -88,10 +88,14 @@ public class HomeActivity extends Activity implements OnClickListener {
 //			Intent i = new Intent(this, SearchActivity.class);
 //			startActivity(i);
 			
-			//location activity
-			Intent i = new Intent(this, LocationsMain.class);
-			//i.putExtra("locationId", "test"); 
+			//myLocations
+			Intent i = new Intent(this, MyLocationsActivity.class);
 			startActivity(i);
+			
+			//location activity
+//			Intent i = new Intent(this, LocationsMain.class);
+//			//i.putExtra("locationId", "test"); 
+//			startActivity(i);
 		}
 		
 		if(v == cameraActivityButton){

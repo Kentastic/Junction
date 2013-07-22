@@ -11,7 +11,7 @@
     tools:context=".LocationActivity" >
 
    <LinearLayout
-	    android:id="@+id/LinearLayout1"
+	    android:id="@+id/myLocationsLinearLayout"
 	    android:orientation="vertical"
 	    android:layout_height="fill_parent"
 	    android:layout_width="fill_parent"
