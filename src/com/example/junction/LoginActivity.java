@@ -132,7 +132,6 @@ public class LoginActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {    
-        	Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_LONG).show();
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.example.junction;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -10,14 +11,17 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+@SuppressLint("NewApi")
 public class LocationsMain extends Activity {
-	int locationId = -1;
+	static public int locationId = -1;
 	Button takePhotoButton;
 	Boolean newLocation = false;
 	
 	EditText titleEditText;
+	TextView titleTextView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,7 @@ public class LocationsMain extends Activity {
 		setContentView(R.layout.activity_locations_main);
 		
 		titleEditText = (EditText)findViewById(R.id.LocationTitleEditText1);
+		titleTextView = (TextView)findViewById(R.id.locationTitleTextView);
 		
 		takePhotoButton = (Button) findViewById(R.id.takePhotoButton1);
 		takePhotoButton.setOnClickListener(takePhotoButtonListener);
@@ -32,6 +37,7 @@ public class LocationsMain extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			locationId = extras.getInt("locationId");
+			Log.e("main", Integer.toString(locationId));
 		}
 		
 		ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.locationTextViewSwitcher1);
@@ -40,7 +46,16 @@ public class LocationsMain extends Activity {
 			switcher.showNext();
 			newLocation = true;
 		} else {
+			String whereClause = "id = ?";
+			String[] whereArgs = new String[] { Integer.toString(locationId) };
 			
+			Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
+			
+			if (locationData.getCount() != 0) {
+				int titleColumn = locationData.getColumnIndex("title");
+				locationData.moveToFirst();
+				titleTextView.setText(locationData.getString(titleColumn));
+			}
 		}
 		
 	}
@@ -53,7 +68,12 @@ public class LocationsMain extends Activity {
 			
 			if (newLocation) {
 				ContentValues cv = new ContentValues();
-	        	cv.put("title", titleEditText.getText().toString());
+				String title = titleEditText.getText().toString();
+				if (title.isEmpty()) {
+					cv.put("title", "No Title");
+				} else {
+					cv.put("title", title);
+				}
 	        	cv.put("locationName", "test");
 	        	cv.put("latitude", "test");
 	        	cv.put("longitude", "test");

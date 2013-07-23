@@ -2,9 +2,11 @@ package com.example.junction;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -22,7 +24,8 @@ public class MyLocationGroups extends Activity {
 		Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
 
 		if (locationData.getCount() != 0) {
-			int subjectIndexColumn = locationData.getColumnIndex("title");
+			int titleColumn = locationData.getColumnIndex("title");
+			
 			locationData.moveToFirst();
 			//locationData = locationData.getInt(subjectIndexColumn);
 			
@@ -31,12 +34,35 @@ public class MyLocationGroups extends Activity {
 			{
 //				Log.e("test", "first");
 				Button locationButton = new Button(this);
-				locationButton.setText(locationData.getString(subjectIndexColumn));
+				locationButton.setText(locationData.getString(titleColumn));
 //				Log.e("test", "second");
 //				LayoutParams lp = locationButton.getLayoutParams();
 //				lp.width = LayoutParams.MATCH_PARENT;
 //				locationButton.setLayoutParams(lp);
 				myLocationsLinearLayout.addView(locationButton);
+				
+				locationButton.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Intent i = new Intent(getApplicationContext(), LocationActivity.class);
+						
+						Button b = (Button)v;
+						
+						String whereClause = "title = ?";
+						String[] whereArgs = new String[] { b.getText().toString() };
+						
+						Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
+						if (locationData.getCount() != 0) {
+							int idColumn = locationData.getColumnIndex("id");
+							locationData.moveToFirst();
+							i.putExtra("locationId", locationData.getInt(idColumn)); 
+							Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+						}
+						startActivity(i);
+					}
+				});
 				locationData.moveToNext();
 			}
 		}

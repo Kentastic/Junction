@@ -18,7 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class HomeActivity extends Activity implements OnClickListener {
-	public Button searchActivityButton, cameraActivityButton;
+	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton;
 	public static SQLiteDatabase junctionDB;
 	public static String username;
 
@@ -35,6 +35,10 @@ public class HomeActivity extends Activity implements OnClickListener {
 		cameraActivityButton = new Button(this);
 		cameraActivityButton = (Button) findViewById(R.id.cameraActivityButton);
 		cameraActivityButton.setOnClickListener(this);
+		
+		newLocationActivityButton = new Button(this);
+		newLocationActivityButton = (Button) findViewById(R.id.newLocationActivityButton);
+		newLocationActivityButton.setOnClickListener(this);
 		
 		junctionDB = openOrCreateDatabase("junction", SQLiteDatabase.CREATE_IF_NECESSARY, null);
 		junctionDB.setLocale(Locale.getDefault());
@@ -85,12 +89,12 @@ public class HomeActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (v == searchActivityButton){
-//			Intent i = new Intent(this, SearchActivity.class);
-//			startActivity(i);
-			
-			//myLocations
-			Intent i = new Intent(this, MyLocationsActivity.class);
+			Intent i = new Intent(this, SearchActivity.class);
 			startActivity(i);
+			
+//			//myLocations
+//			Intent i = new Intent(this, MyLocationsActivity.class);
+//			startActivity(i);
 			
 			//location activity
 //			Intent i = new Intent(this, LocationsMain.class);
@@ -99,7 +103,14 @@ public class HomeActivity extends Activity implements OnClickListener {
 		}
 		
 		if(v == cameraActivityButton){
-			Intent i = new Intent(this, CameraActivity.class);
+			//myLocations
+			Intent i = new Intent(this, MyLocationsActivity.class);
+			startActivity(i);
+		}
+		
+		if(v == newLocationActivityButton){
+			Intent i = new Intent(this, LocationsMain.class);
+			//i.putExtra("locationId", "test"); 
 			startActivity(i);
 		}
 		

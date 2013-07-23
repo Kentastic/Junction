@@ -5,15 +5,23 @@ import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.TabHost;
 
 public class LocationActivity extends TabActivity {
 
+	int locationId;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_location);
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			locationId = extras.getInt("locationId");
+		}
 		
 		//For Tab Layout
 		Resources res = getResources();
@@ -23,10 +31,12 @@ public class LocationActivity extends TabActivity {
 		
 		//Adding Tabs
 		intent = new Intent().setClass(this, LocationsMain.class);
+		intent.putExtra("locationId", locationId); 
 		spec = tabHost.newTabSpec("LocationMainPage").setIndicator("Main").setContent(intent);
 		tabHost.addTab(spec);
 		
 		intent = new Intent().setClass(this, LocationsHistogram.class);
+		intent.putExtra("locationId", locationId); 
 		spec = tabHost.newTabSpec("LocationHistogramPage").setIndicator("Histogram").setContent(intent);
 		tabHost.addTab(spec);
 		
