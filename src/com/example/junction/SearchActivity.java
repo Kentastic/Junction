@@ -23,7 +23,7 @@ public class SearchActivity extends TabActivity {
 		
 		//Adding Tabs
 		intent = new Intent().setClass(this, SearchActivityByLocation.class);
-		spec = tabHost.newTabSpec("searchByLocation").setIndicator("Search by Location").setContent(intent);
+		spec = tabHost.newTabSpec("searchByLocation").setIndicator("Search Nearby").setContent(intent);
 		tabHost.addTab(spec);
 		
 		intent = new Intent().setClass(this, SearchActivityByName.class);

@@ -32,7 +32,7 @@
         android:text="@string/goButton" />
 
     <TextView
-        android:id="@+id/coordinates"
+        android:id="@+id/coords"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/goButton"

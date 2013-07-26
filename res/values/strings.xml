@@ -19,5 +19,6 @@
     <string name="searchActivity">Search for Location Groups</string>
     <string name="cameraActivity">Go to Camera Screen</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="noAddress">Could not find a Location Group</string>
 
 </resources>

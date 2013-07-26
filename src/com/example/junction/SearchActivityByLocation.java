@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -40,6 +41,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
  	Geocoder myGeocoder;
  	MapFragment mapFragment;
  	GoogleMap myMap;
+ 	SupportMapFragment frag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,9 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		setContentView(R.layout.activity_search_activity_by_location);
 		
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		userLocationTextView = (TextView) findViewById(R.id.coordinates);
+		Log.i("userText", "USER_LOCATION_START");
+		userLocationTextView = (TextView) findViewById(R.id.coords);
+		Log.i("userText2", "USER_LOCATION_END");
 		
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
@@ -65,12 +69,9 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		getAddress(userLocation);
 
 		//Map
-		
-		SupportMapFragment fragment = new SupportMapFragment();
-		getSupportFragmentManager().beginTransaction().add(R.id.mapFragmentActivity, fragment).commit();
-        fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-		myMap = fragment.getMap();
-		
+
+		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+		myMap = frag.getMap();
 		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 		myMap.setMyLocationEnabled(true);
 		myMap.setIndoorEnabled(true);

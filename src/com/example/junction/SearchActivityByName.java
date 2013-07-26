@@ -44,7 +44,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		userEntry = (EditText) findViewById(R.id.userEntry);
 		userEntry.clearFocus();
-		coordinates = (TextView) findViewById(R.id.coordinates);
+		coordinates = (TextView) findViewById(R.id.coords);
 		goButton = new Button(this);
 		goButton = (Button) findViewById(R.id.goButton);
 		goButton.setOnClickListener(this);
@@ -70,7 +70,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		
 		try {
 			List<Address> userList = myGeocoder.getFromLocationName(string, 1);
-			if (userList!= null){
+			if (userList!= null && !userList.isEmpty()){
 				userAddress = userList.get(0);
 				StringBuilder userPlace = new StringBuilder("Address: \n");
 				
@@ -78,6 +78,10 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 					userPlace.append(userAddress.getAddressLine(i) + "\n");
 				}
 				coordinates.setText(userPlace.toString());
+			}
+			
+			else{
+				coordinates.setText(R.string.noAddress);
 			}
 		} 
 		
