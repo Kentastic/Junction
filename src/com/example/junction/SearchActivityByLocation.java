@@ -9,6 +9,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -49,9 +50,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		setContentView(R.layout.activity_search_activity_by_location);
 		
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		Log.i("userText", "USER_LOCATION_START");
 		userLocationTextView = (TextView) findViewById(R.id.coords);
-		Log.i("userText2", "USER_LOCATION_END");
 		
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
@@ -69,12 +68,13 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		getAddress(userLocation);
 
 		//Map
-
 		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		myMap = frag.getMap();
 		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 		myMap.setMyLocationEnabled(true);
 		myMap.setIndoorEnabled(true);
+		
+		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("A. Location Group").snippet("Currently here"));
 	}
 
 	@Override
@@ -95,17 +95,23 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		Address myAddress = new Address(Locale.CANADA);
 		
 		try {
-			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 2);
-			if (addresses != null)
+			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
+			if (addresses != null && !addresses.isEmpty())
 			{
-				myAddress = addresses.get(0);
-				geocode = myAddress.getAddressLine(0);
+				StringBuilder userPlace = new StringBuilder("Address: \n");
 				
-				Address myAddress1 = addresses.get(1);
-				String geocode1 = myAddress.getAddressLine(0);
-
-				addressTextView.setText(geocode + "\n" + geocode1);						
+				for (int i = 0; i < 5; i++) {
+					myAddress = addresses.get(i);
+					for(int j = 0; j < 5; j++){
+						userPlace.append(myAddress.getAddressLine(j) + "\n");
+					}
 				}
+				
+				addressTextView.setText(userPlace.toString());
+			}
+			else{
+				addressTextView.setText(R.string.noAddress);
+			}
 		}
 		
 		catch (IOException e) {
