@@ -69,11 +69,12 @@ public class LoginActivity extends Activity {
 				if (userData.getCount() == 0) {
 					Log.e("register", "NONE");
 					
-//					ContentValues cv = new ContentValues();
-//		        	cv.put("name", username);
-//		        	cv.put("password", password);
-//		        	cv.put("locationIds", "");
-//		            HomeActivity.junctionDB.insert("users", null, cv);
+					ContentValues cv = new ContentValues();
+		        	cv.put("name", username);
+		        	cv.put("password", password);
+		        	cv.put("locationIds", "");
+		        	cv.put("starIds", "");
+		            HomeActivity.junctionDB.insert("users", null, cv);
 					new InsertUser().execute("");
 		            
 		            HomeActivity.username = username;

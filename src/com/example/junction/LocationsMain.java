@@ -12,12 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 @SuppressLint("NewApi")
 public class LocationsMain extends Activity {
 	static public int locationId = -1;
-	Button takePhotoButton;
+	Button takePhotoButton, starButton;
 	Boolean newLocation = false;
 	
 	EditText titleEditText;
@@ -33,6 +34,9 @@ public class LocationsMain extends Activity {
 		
 		takePhotoButton = (Button) findViewById(R.id.takePhotoButton1);
 		takePhotoButton.setOnClickListener(takePhotoButtonListener);
+		
+		starButton = (Button) findViewById(R.id.starButton);
+		starButton.setOnClickListener(takePhotoButtonListener);
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -63,29 +67,55 @@ public class LocationsMain extends Activity {
 	View.OnClickListener takePhotoButtonListener = new View.OnClickListener() {
 		
 		@Override
-		public void onClick(View arg0) {
+		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			
-			if (newLocation) {
-				ContentValues cv = new ContentValues();
-				String title = titleEditText.getText().toString();
-				if (title.isEmpty()) {
-					cv.put("title", "No Title");
-				} else {
-					cv.put("title", title);
+			if (v == takePhotoButton) {
+				if (newLocation) {
+					ContentValues cv = new ContentValues();
+					String title = titleEditText.getText().toString();
+					if (title.isEmpty()) {
+						cv.put("title", "No Title");
+					} else {
+						cv.put("title", title);
+					}
+		        	cv.put("locationName", "test");
+		        	cv.put("latitude", "test");
+		        	cv.put("longitude", "test");
+		            HomeActivity.junctionDB.insert("locations", null, cv);
+		            
+		            Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
+		            locationId = locationData.getCount();
 				}
-	        	cv.put("locationName", "test");
-	        	cv.put("latitude", "test");
-	        	cv.put("longitude", "test");
-	            HomeActivity.junctionDB.insert("locations", null, cv);
-	            
-	            Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
-	            locationId = locationData.getCount();
+				
+				Intent i = new Intent(LocationsMain.this, CameraActivity.class);
+				i.putExtra("locationId", locationId); 
+				startActivity(i);
 			}
 			
-			Intent i = new Intent(LocationsMain.this, CameraActivity.class);
-			i.putExtra("locationId", locationId); 
-			startActivity(i);
+			if (v == starButton) {
+				String whereClause = "name = ?";
+				String[] whereArgs = new String[] { HomeActivity.username };
+				
+				Cursor userData = HomeActivity.junctionDB.query("users", null, whereClause , whereArgs, null, null, null);
+				if (userData.getCount() != 0) {
+					userData.moveToFirst();
+					int starIdsColumn = userData.getColumnIndex("starIds");
+					String starIds = userData.getString(starIdsColumn);
+					
+					
+					if (starIds.length() == 0) {
+						starIds = Integer.toString(locationId);
+					} else {
+						starIds += "," + Integer.toString(locationId);
+					}
+		            
+		            ContentValues cv = new ContentValues();
+		        	cv.put("starIds", starIds);
+		            HomeActivity.junctionDB.update("users", cv, whereClause, whereArgs);
+				} else {
+					Toast.makeText(getApplicationContext(), "You need to login before starring a location", Toast.LENGTH_LONG).show();
+				}
+			}
 		}
 	};
 	

@@ -18,7 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class HomeActivity extends Activity implements OnClickListener {
-	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton;
+	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton, loginButton;
 	public static SQLiteDatabase junctionDB;
 	public static String username;
 
@@ -28,17 +28,18 @@ public class HomeActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
-		searchActivityButton = new Button(this);
 		searchActivityButton = (Button) findViewById(R.id.searchActivityButton);
 		searchActivityButton.setOnClickListener(this);
 		
-		cameraActivityButton = new Button(this);
 		cameraActivityButton = (Button) findViewById(R.id.cameraActivityButton);
 		cameraActivityButton.setOnClickListener(this);
 		
-		newLocationActivityButton = new Button(this);
 		newLocationActivityButton = (Button) findViewById(R.id.newLocationActivityButton);
 		newLocationActivityButton.setOnClickListener(this);
+		
+		
+		loginButton = (Button) findViewById(R.id.homeLoginButton);
+		loginButton.setOnClickListener(this);
 		
 		junctionDB = openOrCreateDatabase("junction", SQLiteDatabase.CREATE_IF_NECESSARY, null);
 		junctionDB.setLocale(Locale.getDefault());
@@ -56,7 +57,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 		
 		junctionDB.execSQL(subjectsTableSql);
 		
-		String userTableSql = "CREATE TABLE IF NOT EXISTS `users` (`name` VARCHAR(45) PRIMARY KEY NOT NULL ,`password` VARCHAR(45) NOT NULL ,`locationIds` VARCHAR(45) NOT NULL );";
+		String userTableSql = "CREATE TABLE IF NOT EXISTS `users` (`name` VARCHAR(45) PRIMARY KEY NOT NULL ,`password` VARCHAR(45) NOT NULL ,`locationIds` VARCHAR(45) NOT NULL, `starIds` VARCHAR(45) NOT NULL );";
 		junctionDB.execSQL(userTableSql);
 		
 		//change to Decimal(9,6)
@@ -67,6 +68,11 @@ public class HomeActivity extends Activity implements OnClickListener {
 		if (username == null) {
 			DialogFragment newFragment = new LoginDialogFragment();
 	        newFragment.show(getFragmentManager(),"Login");
+	        
+	        cameraActivityButton.setVisibility(View.INVISIBLE);
+	        newLocationActivityButton.setVisibility(View.INVISIBLE);
+		} else {
+			loginButton.setVisibility(View.INVISIBLE);
 		}
 		
 		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
@@ -112,6 +118,12 @@ public class HomeActivity extends Activity implements OnClickListener {
 			Intent i = new Intent(this, LocationsMain.class);
 			//i.putExtra("locationId", "test"); 
 			startActivity(i);
+		}
+		
+		if(v == loginButton){
+			Intent i = new Intent(this, LoginActivity.class);
+     	    i.putExtra("registering", false); 
+     	    startActivity(i);
 		}
 		
 	}

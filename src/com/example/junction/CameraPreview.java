@@ -25,6 +25,9 @@ public class CameraPreview extends SurfaceView implements
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try {
+        	if (mCamera == null) {
+        		mCamera = Camera.open();
+        	}
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
             //mCamera.setDisplayOrientation(90);
@@ -44,6 +47,9 @@ public class CameraPreview extends SurfaceView implements
             int width, int height) {
         // start preview with new settings
         try {
+        	if (mCamera == null) {
+        		mCamera = Camera.open();
+        	}
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
         } catch (Exception e) {

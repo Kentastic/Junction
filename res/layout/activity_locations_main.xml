@@ -54,4 +54,13 @@
         android:layout_toRightOf="@+id/HistogramImageView"
         android:text="Take Photo" />
 
+    <Button
+        android:id="@+id/starButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/takePhotoButton1"
+        android:layout_below="@+id/takePhotoButton1"
+        android:layout_marginTop="26dp"
+        android:text="Star Location" />
+
 </RelativeLayout>
