@@ -74,13 +74,13 @@ public class LocationsMain extends Activity {
 					ContentValues cv = new ContentValues();
 					String title = titleEditText.getText().toString();
 					if (title.isEmpty()) {
-						cv.put("title", "No Title");
+						cv.put("title", "");
 					} else {
 						cv.put("title", title);
 					}
-		        	cv.put("locationName", "test");
-		        	cv.put("latitude", "test");
-		        	cv.put("longitude", "test");
+		        	cv.put("locationName", "");
+		        	cv.put("latitude", "");
+		        	cv.put("longitude", "");
 		            HomeActivity.junctionDB.insert("locations", null, cv);
 		            
 		            Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);

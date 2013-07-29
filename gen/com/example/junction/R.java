@@ -191,7 +191,7 @@ containing a value of this type.
         public static final int LocationTitleEditText1=0x7f060015;
         public static final int RelativeLayout1=0x7f060005;
         public static final int ScrollView1=0x7f060021;
-        public static final int action_settings=0x7f060026;
+        public static final int action_settings=0x7f060027;
         public static final int address=0x7f060023;
         public static final int button_capture=0x7f060008;
         public static final int cameraActivityButton=0x7f06000f;
@@ -212,6 +212,7 @@ containing a value of this type.
         public static final int mapFragmentActivity=0x7f06001f;
         public static final int myLocationsLinearLayout=0x7f060011;
         public static final int myStarredLinearLayout=0x7f06001e;
+        public static final int nameSearchLinearLayout=0x7f060026;
         public static final int newLocationActivityButton=0x7f060010;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;

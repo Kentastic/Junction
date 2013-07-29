@@ -48,6 +48,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_activity_by_location);
 		
+		
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Log.i("userText", "USER_LOCATION_START");
 		userLocationTextView = (TextView) findViewById(R.id.coords);
@@ -55,26 +56,30 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
-		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
+		//myCriteria.setPowerRequirement(Criteria.POWER_LOW);
 		
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
+		
+		if (userLocation != null) {
+			userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
+		} else {
+			userLocationTextView.setText("no Location found");
+		}
 		
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
-	
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		addressTextView = (TextView) findViewById(R.id.address);
+		//getAddress(userLocation);
 		
-		getAddress(userLocation);
 
 		//Map
 
 		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		myMap = frag.getMap();
-		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
-		myMap.setMyLocationEnabled(true);
-		myMap.setIndoorEnabled(true);
+		//myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
+		//myMap.setMyLocationEnabled(true);
+		//myMap.setIndoorEnabled(true);
 	}
 
 	@Override
@@ -88,7 +93,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	public void onLocationChanged(Location location) {
 		userLocation = location;
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
-		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
+		//myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 	}
 
 	private void getAddress(Location location) {
@@ -105,7 +110,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 				String geocode1 = myAddress.getAddressLine(0);
 
 				addressTextView.setText(geocode + "\n" + geocode1);						
-				}
+			}
 		}
 		
 		catch (IOException e) {

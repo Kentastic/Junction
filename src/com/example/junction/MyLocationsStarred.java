@@ -38,10 +38,11 @@ public class MyLocationsStarred extends Activity {
 		}
 		
 		if (ids.length > 0) {
-			whereClause = "locationId = ?";
+			
+			whereClause = "id = ?";
 			whereArgs = ids;
 			
-			Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
+			Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
 			
 			if (locationData.getCount() != 0) {
 				int titleColumn = locationData.getColumnIndex("title");

@@ -12,11 +12,16 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -26,6 +31,7 @@ import android.view.Menu;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -34,7 +40,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class CameraActivity extends Activity {
+public class CameraActivity extends Activity implements LocationListener, OnClickListener {
 	
 	private int locationId;
 	private Camera mCamera;
@@ -43,6 +49,10 @@ public class CameraActivity extends Activity {
     private SeekBar seek;
     Parameters parameters;
     Display display;
+    Button captureButton;
+    
+    LocationManager locManager;
+	Location userLocation;
 
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
@@ -51,7 +61,7 @@ public class CameraActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
 		
-		Button captureButton = (Button) findViewById(R.id.button_capture);
+		captureButton = (Button) findViewById(R.id.button_capture);
 		FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
 		image = (ImageView) findViewById(R.id.HistogramImageView);
 		seek = (SeekBar) findViewById(R.id.HistogramSeekBar1);
@@ -77,12 +87,7 @@ public class CameraActivity extends Activity {
         preview.addView(mCameraPreview);
 
         //Button captureButton = (Button) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCamera.takePicture(null, null, mPicture);
-            }
-        });
+        captureButton.setOnClickListener(this);
         
         seek.setOnSeekBarChangeListener(seekListener);
         
@@ -90,6 +95,21 @@ public class CameraActivity extends Activity {
 		if (extras != null) {
 			locationId = extras.getInt("locationId");
 		}
+		
+		
+		
+		///GPS stuff
+		
+		locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+		
+		Criteria myCriteria = new Criteria();
+		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
+		
+		locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, this);
+		String bestProvider = locManager.getBestProvider(myCriteria, true);
+		userLocation = locManager.getLastKnownLocation(bestProvider);
+	    
+	    //locManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, getMainLooper());
 	}
 	
 	OnSeekBarChangeListener seekListener = new OnSeekBarChangeListener() {
@@ -115,6 +135,14 @@ public class CameraActivity extends Activity {
 		}
 	};
 
+	public void onClick(View v) {
+		if (v == captureButton) {
+			mCamera.takePicture(null, null, mPicture);
+			locManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, this);
+		}
+        
+    }
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -152,20 +180,10 @@ public class CameraActivity extends Activity {
 			int currentSubjectIndex = 0;
 			
 			Cursor subjectData = HomeActivity.junctionDB.query("subjects", null, whereClause , whereArgs, null, null, orderClause);
-			Log.e("test", "first");
 			if (subjectData.getCount() != 0) {
 				int subjectIndexColumn = subjectData.getColumnIndex("subjectIndex");
 				subjectData.moveToFirst();
 				currentSubjectIndex = subjectData.getInt(subjectIndexColumn);
-				
-//				subjectData.moveToFirst();
-//				while (subjectData.isAfterLast() == false) 
-//				{
-//					int rowSubjectIndex = subjectData.getInt(subjectIndexColumn);
-//				    if (rowSubjectIndex > currentSubjectIndex) {
-//				    	currentSubjectIndex = rowSubjectIndex;
-//				    }
-//				}
 				currentSubjectIndex++;
 			}
         	
@@ -181,9 +199,7 @@ public class CameraActivity extends Activity {
 			whereArgs = new String[] { HomeActivity.username };
 			
 			Cursor userData = HomeActivity.junctionDB.query("users", null, whereClause , whereArgs, null, null, null);
-			Log.e("test", "second");
 			if (userData.getCount() != 0) {
-				Log.e("test", "third");
 				userData.moveToFirst();
 				int locationIdsColumn = userData.getColumnIndex("locationIds");
 				String locationIds = userData.getString(locationIdsColumn);
@@ -200,6 +216,24 @@ public class CameraActivity extends Activity {
 	            HomeActivity.junctionDB.update("users", cv, whereClause, whereArgs);
 			} else {
 				Toast.makeText(getApplicationContext(), "You need to login before adding to a location", Toast.LENGTH_LONG).show();
+			}
+			
+			
+			whereClause = "id = ?";
+			whereArgs = new String[] { Integer.toString(locationId) };
+			Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
+			
+			if (locationData.getCount() != 0) {
+				locationData.moveToFirst();
+				int latColumn = locationData.getColumnIndex("latitude");
+				//Log.i("test", Boolean.toString(userLocation != null));
+				if (locationData.getString(latColumn).isEmpty() && userLocation != null) {
+					cv = new ContentValues();
+		        	cv.put("latitude", Double.toString(userLocation.getLatitude()));
+		        	cv.put("longitude",  Double.toString(userLocation.getLongitude()));
+		        	Toast.makeText(getApplicationContext(), Double.toString(userLocation.getLongitude()), Toast.LENGTH_SHORT).show();
+		            HomeActivity.junctionDB.update("locations", cv, whereClause, whereArgs);
+				}
 			}
         	
         }
@@ -247,4 +281,31 @@ public class CameraActivity extends Activity {
 
         mCamera.setParameters(parameters);                     
     }
+
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, Double.toString(location.getLatitude()), Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, Double.toString(location.getLongitude()), Toast.LENGTH_SHORT).show();
+		userLocation = location;
+		locManager.removeUpdates(this);
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
 }

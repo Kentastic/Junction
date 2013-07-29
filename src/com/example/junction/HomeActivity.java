@@ -75,12 +75,12 @@ public class HomeActivity extends Activity implements OnClickListener {
 			loginButton.setVisibility(View.INVISIBLE);
 		}
 		
-		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
-		if (userData.getCount() == 0) {
-			Log.e("test", "NONE");
-		} else {
-			Log.e("test", "SOME");
-		}
+//		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
+//		if (userData.getCount() == 0) {
+//			Log.e("test", "NONE");
+//		} else {
+//			Log.e("test", "SOME");
+//		}
 		
 		
 	}

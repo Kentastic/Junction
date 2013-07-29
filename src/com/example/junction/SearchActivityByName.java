@@ -13,6 +13,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -24,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -35,6 +38,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 	Geocoder myGeocoder;
 	TextView coordinates;
 	Button goButton;
+	LinearLayout nameSearchLinearLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,8 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		goButton = new Button(this);
 		goButton = (Button) findViewById(R.id.goButton);
 		goButton.setOnClickListener(this);
+		
+		nameSearchLinearLayout = (LinearLayout) findViewById(R.id.nameSearchLinearLayout);
 		
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -78,6 +84,63 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 					userPlace.append(userAddress.getAddressLine(i) + "\n");
 				}
 				coordinates.setText(userPlace.toString());
+				
+				Location placeLocation = new Location("name");
+				placeLocation.setLatitude(userAddress.getLatitude());
+				placeLocation.setLongitude(userAddress.getLongitude());
+				
+				
+				//get locations
+				Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
+
+				if (locationData.getCount() != 0) {
+					int latColumn = locationData.getColumnIndex("latitude");
+					int longColumn = locationData.getColumnIndex("longitude");
+					int titleColumn = locationData.getColumnIndex("title");
+					
+					locationData.moveToFirst();
+					while (locationData.isAfterLast() == false) 
+					{
+						Location dbLocation = new Location("database");
+						dbLocation.setLatitude(Double.parseDouble(locationData.getString(latColumn)));
+						dbLocation.setLongitude(Double.parseDouble(locationData.getString(longColumn)));
+						
+						Log.i("lat", Double.toString(placeLocation.getLatitude()));
+						Log.i("long", Double.toString(placeLocation.getLongitude()));
+						Log.i("long", Float.toString(placeLocation.distanceTo(dbLocation)));
+						
+						if (placeLocation.distanceTo(dbLocation) <= 5000) {
+							Button locationButton = new Button(this);
+							locationButton.setText(locationData.getString(titleColumn));
+							nameSearchLinearLayout.addView(locationButton);
+							
+							locationButton.setOnClickListener(new View.OnClickListener() {
+								
+								@Override
+								public void onClick(View v) {
+									Intent i = new Intent(getApplicationContext(), LocationActivity.class);
+									
+									Button b = (Button)v;
+									
+									String whereClause = "title = ?";
+									String[] whereArgs = new String[] { b.getText().toString() };
+									
+									Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
+									if (locationData.getCount() != 0) {
+										int idColumn = locationData.getColumnIndex("id");
+										locationData.moveToFirst();
+										i.putExtra("locationId", locationData.getInt(idColumn)); 
+										Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+									}
+									startActivity(i);
+								}
+							});
+						}
+						locationData.moveToNext();
+					}
+				}
+				
+				
 			}
 			
 			else{

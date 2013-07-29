@@ -27,25 +27,16 @@ public class MyLocationGroups extends Activity {
 			int titleColumn = locationData.getColumnIndex("title");
 			
 			locationData.moveToFirst();
-			//locationData = locationData.getInt(subjectIndexColumn);
-			
-//			subjectData.moveToFirst();
 			while (locationData.isAfterLast() == false) 
 			{
-//				Log.e("test", "first");
 				Button locationButton = new Button(this);
 				locationButton.setText(locationData.getString(titleColumn));
-//				Log.e("test", "second");
-//				LayoutParams lp = locationButton.getLayoutParams();
-//				lp.width = LayoutParams.MATCH_PARENT;
-//				locationButton.setLayoutParams(lp);
 				myLocationsLinearLayout.addView(locationButton);
 				
 				locationButton.setOnClickListener(new View.OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
 						Intent i = new Intent(getApplicationContext(), LocationActivity.class);
 						
 						Button b = (Button)v;

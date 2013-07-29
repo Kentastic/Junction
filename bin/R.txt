@@ -60,7 +60,7 @@ int id HistogramSeekBar1 0x7f060009
 int id LocationTitleEditText1 0x7f060015
 int id RelativeLayout1 0x7f060005
 int id ScrollView1 0x7f060021
-int id action_settings 0x7f060026
+int id action_settings 0x7f060027
 int id address 0x7f060023
 int id button_capture 0x7f060008
 int id cameraActivityButton 0x7f06000f
@@ -81,6 +81,7 @@ int id map 0x7f060020
 int id mapFragmentActivity 0x7f06001f
 int id myLocationsLinearLayout 0x7f060011
 int id myStarredLinearLayout 0x7f06001e
+int id nameSearchLinearLayout 0x7f060026
 int id newLocationActivityButton 0x7f060010
 int id none 0x7f060000
 int id normal 0x7f060001
