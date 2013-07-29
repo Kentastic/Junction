@@ -48,33 +48,29 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_activity_by_location);
-		
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		userLocationTextView = (TextView) findViewById(R.id.coords);
-		
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
 		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
-		
+
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
-		
+		//userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
-	
+
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		addressTextView = (TextView) findViewById(R.id.address);
-		
-		getAddress(userLocation);
+		//getAddress(userLocation);
 
+		
 		//Map
 		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		myMap = frag.getMap();
 //		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 //		myMap.setMyLocationEnabled(true);
 //		myMap.setIndoorEnabled(true);
-		
-		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("A. Location Group").snippet("Currently here"));
+//		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("A. Location Group").snippet("Currently here"));
 	}
 
 	@Override
