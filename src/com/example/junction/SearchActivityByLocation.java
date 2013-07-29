@@ -136,13 +136,4 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		// TODO Auto-generated method stub
 		
 	}
-
-//	@Override
-//	public void onStatusChanged(String provider, int status, Bundle extras) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
-	
-
 }
