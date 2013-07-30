@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.Surface;
@@ -32,6 +34,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+@SuppressLint("NewApi")
 public class CameraActivity extends Activity implements LocationListener, OnClickListener {
 	
 	private int locationId;
@@ -62,7 +65,7 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
         
         mCamera = getCameraInstance();
         parameters = mCamera.getParameters();
-        display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();  
+        display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 		
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -88,6 +91,12 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 				
 				byte[] img = subjectData.getBlob(subjectImageColumn);
 				Bitmap bmp = BitmapFactory.decodeByteArray(img,0,img.length);
+				
+				Matrix m = new Matrix();
+				m.setScale(-1, 1);
+
+				bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, true);
+				
 				image.setImageBitmap(bmp);
 				image.setAlpha(127);
 				image.invalidate();
@@ -144,7 +153,7 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 	private Camera getCameraInstance() {
         Camera camera = null;
         try {
-            camera = Camera.open();
+            camera = Camera.open(0);
         } catch (Exception e) {
         	
         }
@@ -190,9 +199,11 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 				String[] ids = locationIds.split(",");
 				Boolean inArray = false;
 				
-				for (int i = 0; i < ids.length; i++) {
-					if (Integer.parseInt(ids[i]) == locationId) {
-						inArray = true;
+				if (ids.length > 1) {
+					for (int i = 0; i < ids.length; i++) {
+						if (Integer.parseInt(ids[i]) == locationId) {
+							inArray = true;
+						}
 					}
 				}
 				
@@ -236,21 +247,28 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
     
     public void surfaceChanged(int width, int height) {            
         if (display.getRotation() == Surface.ROTATION_0) {
-            parameters.setPreviewSize(height, width);                           
+//            parameters.setPreviewSize(height, width);    
+        	Log.i("test", "1");
             mCamera.setDisplayOrientation(90);
+            parameters.setRotation(270);
+//        	parameters.set("orientation", "portrait");
         }
 
         if (display.getRotation() == Surface.ROTATION_90) {
-            parameters.setPreviewSize(width, height);                           
+        	Log.i("test", "2");
         }
 
         if (display.getRotation() == Surface.ROTATION_180) {
-            parameters.setPreviewSize(height, width);               
+        	Log.i("test", "3");
+//            parameters.setPreviewSize(height, width);  
+        	parameters.setRotation(270);
         }
 
         if (display.getRotation() == Surface.ROTATION_270) {
-            parameters.setPreviewSize(width, height);
+        	Log.i("test", "4");
+//            parameters.setPreviewSize(width, height);
             mCamera.setDisplayOrientation(180);
+            parameters.setRotation(180);
         }
         
         mCamera.setParameters(parameters);                     

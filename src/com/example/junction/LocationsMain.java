@@ -97,40 +97,43 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 			}
 		}
 		
-		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		
-		Criteria myCriteria = new Criteria();
-		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
-		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
-		
-		String bestProvider = LocManager.getBestProvider(myCriteria, true);
-		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		
-		destination = LocManager.getLastKnownLocation(bestProvider);
-		
-		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
-		
-		destination.setLatitude(49.2678317);
-		destination.setLongitude(-122.7);
-		goLocation = "Your destination";
-		
-		myGeocoder = new Geocoder(this, Locale.CANADA);
-		getAddress(userLocation);
-		
-		//Map
-		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.directionMap);
-		myMap = frag.getMap();
-		//myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
-	
-		
-		myMap.setMyLocationEnabled(true);
-		myMap.setIndoorEnabled(true);
-		myMap.setOnMarkerClickListener(this);
-		
-		marker1 = myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title(currentLocation).snippet("You are here"));
-		marker2 = myMap.addMarker(new MarkerOptions().position(new LatLng(destination.getLatitude(), destination.getLongitude())).title("hmm").snippet(goLocation));
-		
-		builder = new LatLngBounds.Builder();
+//		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//		
+//		Criteria myCriteria = new Criteria();
+//		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
+//		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
+//		
+//		String bestProvider = LocManager.getBestProvider(myCriteria, true);
+//		userLocation = LocManager.getLastKnownLocation(bestProvider);
+//		
+//		destination = LocManager.getLastKnownLocation(bestProvider);
+//		
+//		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
+//		
+//		destination.setLatitude(49.2678317);
+//		destination.setLongitude(-122.7);
+//		goLocation = "Your destination";
+//		
+//		myGeocoder = new Geocoder(this, Locale.CANADA);
+//		if (userLocation != null) {
+//			getAddress(userLocation);
+//		}
+//		
+//		
+//		//Map
+//		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.directionMap);
+//		myMap = frag.getMap();
+//		//myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
+//	
+//		
+//		myMap.setMyLocationEnabled(true);
+//		myMap.setIndoorEnabled(true);
+//		myMap.setOnMarkerClickListener(this);
+//		
+//		marker1 = myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title(currentLocation).snippet("You are here"));
+//		marker2 = myMap.addMarker(new MarkerOptions().position(new LatLng(destination.getLatitude(), destination.getLongitude())).title("hmm").snippet(goLocation));
+//		
+//		builder = new LatLngBounds.Builder();
 		
 		//setting photo
 		String whereClause = "dateTime in (SELECT max(dateTime)FROM subjects WHERE locationId = ?)";
@@ -184,11 +187,14 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 					String[] ids = starIds.split(",");
 					Boolean inArray = false;
 					
-					for (int i = 0; i < ids.length; i++) {
-						if (Integer.parseInt(ids[i]) == locationId) {
-							inArray = true;
+					if (ids.length > 1) {
+						for (int i = 0; i < ids.length; i++) {
+							if (Integer.parseInt(ids[i]) == locationId) {
+								inArray = true;
+							}
 						}
 					}
+					
 					
 					if (!inArray) {
 						if (starIds.length() == 0) {

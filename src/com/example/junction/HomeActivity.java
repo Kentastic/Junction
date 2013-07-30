@@ -12,13 +12,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+@SuppressLint("NewApi")
 public class HomeActivity extends Activity implements OnClickListener {
 	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton, loginButton;
 	public static SQLiteDatabase junctionDB;
@@ -31,6 +36,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
+		RelativeLayout homeLayout = (RelativeLayout) findViewById(R.id.homelayout);
 		ImageView imageView = (ImageView) findViewById(R.id.imageView1);
 		searchActivityButton = (Button) findViewById(R.id.searchActivityButton);
 		searchActivityButton.setOnClickListener(this);
@@ -79,7 +85,15 @@ public class HomeActivity extends Activity implements OnClickListener {
 				subjectData.moveToFirst();
 				byte[] img = subjectData.getBlob(subjectImageColumn);
 				
+				
+				DisplayMetrics displaymetrics = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+				int height = displaymetrics.heightPixels;
+				int width = displaymetrics.widthPixels;
+				
 				Bitmap bmp = BitmapFactory.decodeByteArray(img,0,img.length);
+				Double ratio = (double)bmp.getWidth() / bmp.getHeight();
+				bmp = Bitmap.createScaledBitmap(bmp, (int)((height/2)*ratio), height/2, false);
 	        	imageView.setImageBitmap(bmp);
 	        	imageView.invalidate();
 			}

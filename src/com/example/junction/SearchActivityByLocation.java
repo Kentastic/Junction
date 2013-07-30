@@ -56,12 +56,18 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
+		if (userLocation != null) {
+			userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
+		}
+		
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
 
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		addressTextView = (TextView) findViewById(R.id.address);
-		getAddress(userLocation);
+		
+		if (userLocation != null) {
+			getAddress(userLocation);
+		}
 
 		
 		//Map

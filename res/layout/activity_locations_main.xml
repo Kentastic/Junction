@@ -11,60 +11,76 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".LocationsMain" >
 
-    <ViewSwitcher
-        android:id="@+id/locationTextViewSwitcher1"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/ScrollView1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/locationTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Title" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
 
-        <EditText
-            android:id="@+id/LocationTitleEditText1"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Enter a Title" />
-    </ViewSwitcher>
+            <ViewSwitcher
+                android:id="@+id/locationTextViewSwitcher1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
 
-    <FrameLayout
-        android:id="@+id/frameLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" >
-    </FrameLayout>
+                <TextView
+                    android:id="@+id/locationTitleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Title"
+                    android:textSize="24sp" />
 
-    <ImageView
-        android:id="@+id/locationImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:src="@drawable/icon" />
+                <EditText
+                    android:id="@+id/LocationTitleEditText1"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Enter a Title" >
 
-    <Button
-        android:id="@+id/takePhotoButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="66dp"
-        android:text="Take Photo" />
-    
-    <fragment
-        android:id="@+id/directionMap"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.4" />
+                    <requestFocus />
+                </EditText>
+            </ViewSwitcher>
 
-    <Button
-        android:id="@+id/starButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/takePhotoButton1"
-        android:layout_below="@+id/takePhotoButton1"
-        android:layout_marginTop="26dp"
-        android:text="Star Location" />
+            <FrameLayout
+                android:id="@+id/frameLayout1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" >
+
+                <ImageView
+                    android:id="@+id/locationImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:src="@drawable/icon" />
+
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/takePhotoButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="66dp"
+                android:text="Take Photo" />
+
+            <Button
+                android:id="@+id/starButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="Star Location" />
+
+            <fragment
+                android:id="@+id/directionMap"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="192dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

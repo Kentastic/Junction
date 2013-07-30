@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,8 +25,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
+@SuppressLint("NewApi")
 public class SearchActivityByName extends Activity implements OnClickListener, TextWatcher, OnEditorActionListener {	
 	private EditText userEntry;
 	private String userInput;
@@ -84,36 +87,40 @@ public class SearchActivityByName extends Activity implements OnClickListener, T
 					while (locationData.isAfterLast() == false) 
 					{
 						Location dbLocation = new Location("database");
-						dbLocation.setLatitude(Double.parseDouble(locationData.getString(latColumn)));
-						dbLocation.setLongitude(Double.parseDouble(locationData.getString(longColumn)));
-						
-						if (placeLocation.distanceTo(dbLocation) <= 5000) {
-							Button locationButton = new Button(this);
-							locationButton.setText(locationData.getString(titleColumn));
-							nameSearchLinearLayout.addView(locationButton);
+						if (!locationData.getString(latColumn).isEmpty()) {
+							dbLocation.setLatitude(Double.parseDouble(locationData.getString(latColumn)));
+							dbLocation.setLongitude(Double.parseDouble(locationData.getString(longColumn)));
 							
-							locationButton.setOnClickListener(new View.OnClickListener() {
+							Log.i("test", Float.toString(placeLocation.distanceTo(dbLocation)));
+							if (placeLocation.distanceTo(dbLocation) <= 5000) {
+								Button locationButton = new Button(this);
+								locationButton.setText(locationData.getString(titleColumn));
+								nameSearchLinearLayout.addView(locationButton);
 								
-								@Override
-								public void onClick(View v) {
-									Intent i = new Intent(getApplicationContext(), LocationActivity.class);
+								locationButton.setOnClickListener(new View.OnClickListener() {
 									
-									Button b = (Button)v;
-									
-									String whereClause = "title = ?";
-									String[] whereArgs = new String[] { b.getText().toString() };
-									
-									Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
-									if (locationData.getCount() != 0) {
-										int idColumn = locationData.getColumnIndex("id");
-										locationData.moveToFirst();
-										i.putExtra("locationId", locationData.getInt(idColumn)); 
-										Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+									@Override
+									public void onClick(View v) {
+										Intent i = new Intent(getApplicationContext(), LocationActivity.class);
+										
+										Button b = (Button)v;
+										
+										String whereClause = "title = ?";
+										String[] whereArgs = new String[] { b.getText().toString() };
+										
+										Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
+										if (locationData.getCount() != 0) {
+											int idColumn = locationData.getColumnIndex("id");
+											locationData.moveToFirst();
+											i.putExtra("locationId", locationData.getInt(idColumn)); 
+											Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+										}
+										startActivity(i);
 									}
-									startActivity(i);
-								}
-							});
+								});
+							}
 						}
+						
 						locationData.moveToNext();
 					}
 				}
