@@ -34,7 +34,7 @@ public class MyLocationsStarred extends Activity {
 			
 			ids = starIds.split(",");
 		} else {
-			Toast.makeText(getApplicationContext(), "You need to login before starring a location", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "You need to login to see your starred locations", Toast.LENGTH_LONG).show();
 		}
 		
 		if (ids.length > 0) {

@@ -49,7 +49,7 @@ public class MyLocationGroups extends Activity {
 							int idColumn = locationData.getColumnIndex("id");
 							locationData.moveToFirst();
 							i.putExtra("locationId", locationData.getInt(idColumn)); 
-							Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+//							Log.e("put", Integer.toString(locationData.getInt(idColumn)));
 						}
 						startActivity(i);
 					}

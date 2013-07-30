@@ -1,8 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
     style="@style/Screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -26,7 +28,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Enter a Title" />
-
     </ViewSwitcher>
 
     <FrameLayout
@@ -37,11 +38,9 @@
     </FrameLayout>
 
     <ImageView
-        android:id="@+id/HistogramImageView"
+        android:id="@+id/locationImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/frameLayout1"
-        android:layout_below="@+id/locationTextViewSwitcher1"
         android:layout_marginTop="22dp"
         android:src="@drawable/icon" />
 
@@ -49,10 +48,15 @@
         android:id="@+id/takePhotoButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/HistogramImageView"
         android:layout_marginLeft="66dp"
-        android:layout_toRightOf="@+id/HistogramImageView"
         android:text="Take Photo" />
+    
+    <fragment
+        android:id="@+id/directionMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4" />
 
     <Button
         android:id="@+id/starButton"
@@ -63,4 +67,4 @@
         android:layout_marginTop="26dp"
         android:text="Star Location" />
 
-</RelativeLayout>
+</LinearLayout>

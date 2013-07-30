@@ -34,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_below="@+id/frameLayout1"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:orientation="vertical" >
@@ -42,37 +43,42 @@
             android:id="@+id/homeLoginButton"
             style="@style/Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_margin="5dp"
             android:background="@drawable/roundbutton"
+            android:padding="2dp"
             android:text="Login" />
 
         <Button
             android:id="@+id/searchActivityButton"
             style="@style/Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_margin="5dp"
             android:background="@drawable/button_background"
+            android:padding="2dp"
             android:text="@string/searchActivity" />
 
         <Button
             android:id="@+id/cameraActivityButton"
             style="@style/Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_margin="5dp"
             android:background="@drawable/roundbutton"
+            android:padding="2dp"
             android:text="View My Locations" />
 
         <Button
             android:id="@+id/newLocationActivityButton"
             style="@style/Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:layout_margin="5dp"
             android:background="@drawable/roundbutton"
+            android:padding="2dp"
             android:text="Create New Location" />
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -56,7 +56,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		//userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
+		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
 
 		myGeocoder = new Geocoder(this, Locale.CANADA);
@@ -67,10 +67,10 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		//Map
 		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		myMap = frag.getMap();
-//		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
-//		myMap.setMyLocationEnabled(true);
-//		myMap.setIndoorEnabled(true);
-//		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("A. Location Group").snippet("Currently here"));
+		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
+		myMap.setMyLocationEnabled(true);
+		myMap.setIndoorEnabled(true);
+		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("A. Location Group").snippet("Currently here"));
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	public void onLocationChanged(Location location) {
 		userLocation = location;
 		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
-		//myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
+		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 	}
 
 	private void getAddress(Location location) {
@@ -132,13 +132,4 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		// TODO Auto-generated method stub
 		
 	}
-
-//	@Override
-//	public void onStatusChanged(String provider, int status, Bundle extras) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
-	
-
 }

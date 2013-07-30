@@ -12,7 +12,7 @@
     tools:context=".SearchActivity" >
     
 	<LinearLayout
-	    android:id="@+id/myLocationsLinearLayout"
+	    android:id="@+id/myLoginLinearLayout"
 	    android:orientation="vertical"
 	    android:layout_height="fill_parent"
 	    android:layout_width="fill_parent"

@@ -3,24 +3,32 @@ package com.example.junction;
 import java.util.Locale;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class HomeActivity extends Activity implements OnClickListener {
 	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton, loginButton;
 	public static SQLiteDatabase junctionDB;
 	public static String username;
+	public static SharedPreferences sharedPrefs;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -44,6 +52,8 @@ public class HomeActivity extends Activity implements OnClickListener {
 		junctionDB = openOrCreateDatabase("junction", SQLiteDatabase.CREATE_IF_NECESSARY, null);
 		junctionDB.setLocale(Locale.getDefault());
 		
+		ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+		
 		
 		String subjectsTableSql = "DROP TABLE IF EXISTS 'subjects'";
 //		junctionDB.execSQL(subjectsTableSql);
@@ -65,14 +75,37 @@ public class HomeActivity extends Activity implements OnClickListener {
 		junctionDB.execSQL(locationTableSql);
 
 		
-		if (username == null) {
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		username = sharedPrefs.getString("username", "");
+		
+		if (username.isEmpty()) {
 			DialogFragment newFragment = new LoginDialogFragment();
 	        newFragment.show(getFragmentManager(),"Login");
 	        
 	        cameraActivityButton.setVisibility(View.INVISIBLE);
 	        newLocationActivityButton.setVisibility(View.INVISIBLE);
 		} else {
-			loginButton.setVisibility(View.INVISIBLE);
+//			loginButton.setVisibility(View.INVISIBLE);
+			Toast.makeText(getApplicationContext(), "Logged in as " + username, Toast.LENGTH_LONG).show();
+			loginButton.setText("Logout");
+			
+			//setting photo
+			String whereClause = "dateTime in (SELECT max(dateTime)FROM subjects)";
+			//String[] whereArgs = new String[] { Integer.toString(locationId) };
+			
+			byte[] img = null;
+			
+			Cursor subjectData = HomeActivity.junctionDB.query("subjects", null, whereClause , null, null, null, null);
+			if (subjectData.getCount() != 0) {
+				int subjectImageColumn = subjectData.getColumnIndex("image");
+				subjectData.moveToFirst();
+				img = subjectData.getBlob(subjectImageColumn);
+				
+				Bitmap bmp = BitmapFactory.decodeByteArray(img,0,img.length);
+	        	imageView.setImageBitmap(bmp);
+	        	imageView.invalidate();
+			}
 		}
 		
 //		Cursor userData = junctionDB.query("users", null, null, null, null, null, null);
@@ -121,9 +154,21 @@ public class HomeActivity extends Activity implements OnClickListener {
 		}
 		
 		if(v == loginButton){
-			Intent i = new Intent(this, LoginActivity.class);
-     	    i.putExtra("registering", false); 
-     	    startActivity(i);
+			if (username.isEmpty()) {
+				Intent i = new Intent(this, LoginActivity.class);
+	     	    i.putExtra("registering", false); 
+	     	    startActivity(i);
+			} else {
+				username = "";
+				
+				Editor editor = sharedPrefs.edit();
+	            editor.putString("username", username);
+	            editor.commit();
+				
+				Intent i = new Intent(this, HomeActivity.class);
+	     	    startActivity(i);
+			}
+			
 		}
 		
 	}

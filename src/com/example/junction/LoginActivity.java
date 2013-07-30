@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +21,13 @@ public class LoginActivity extends Activity {
 	Boolean isRegistering;
 	
 	TextView loginTextView;
-	Button loginButton;
+	Button loginButton, registerButton;
 	
 	EditText usernameEditText, passwordEditText;
 	
 	String username, password;
+	
+	LinearLayout loginLinearLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,8 @@ public class LoginActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		isRegistering = extras.getBoolean("registering");
 		
+		loginLinearLayout = (LinearLayout) findViewById(R.id.myLoginLinearLayout);
+		
 		
 		
 		if (isRegistering) {
@@ -48,6 +54,15 @@ public class LoginActivity extends Activity {
 		} else {
 			loginTextView.setText("Login with your username and password");
 			loginButton.setText("Login");
+			
+			TextView tv = new TextView(this);
+			tv.setText("Don't have an account?");
+			loginLinearLayout.addView(tv);
+			
+			registerButton = new Button(this);
+			registerButton.setText("Register");
+			registerButton.setOnClickListener(registerButtonListener);
+			loginLinearLayout.addView(registerButton);
 		}
 	}
 	
@@ -59,7 +74,7 @@ public class LoginActivity extends Activity {
 			username = usernameEditText.getText().toString();
 			password = passwordEditText.getText().toString();
 			
-			if (isRegistering) {
+			if (v == loginButton && isRegistering) {
 				
 				String whereClause = "name = ?";
 				String[] whereArgs = new String[] { username };
@@ -78,7 +93,10 @@ public class LoginActivity extends Activity {
 					new InsertUser().execute("");
 		            
 		            HomeActivity.username = username;
-		            Toast.makeText(getApplicationContext(), "Account Created now logged in as " + username, Toast.LENGTH_LONG).show();
+
+		            Editor editor = HomeActivity.sharedPrefs.edit();
+		            editor.putString("username", username);
+		            editor.commit();
 		            
 		            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 					startActivity(i);
@@ -89,7 +107,7 @@ public class LoginActivity extends Activity {
 				
 				
 	            
-			} else {
+			} else if (v == loginButton && !isRegistering) {
 				
 				String whereClause = "name = ? AND password = ?";
 				String[] whereArgs = new String[] { username, password };
@@ -101,11 +119,20 @@ public class LoginActivity extends Activity {
 				} else {
 					Log.e("test", "SOME");
 					HomeActivity.username = username;
-		            Toast.makeText(getApplicationContext(), "Now logged in as " + username, Toast.LENGTH_LONG).show();
+
+		            Editor editor = HomeActivity.sharedPrefs.edit();
+		            editor.putString("username", username);
+		            editor.commit();
 		            
 		            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 					startActivity(i);
 				}
+				
+			} else if (v == registerButton) {
+				Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+         	    i.putExtra("registering", true); 
+         	    startActivity(i);
+			} else {
 				
 			}
 		}

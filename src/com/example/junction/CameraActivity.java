@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -66,8 +67,8 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 		image = (ImageView) findViewById(R.id.HistogramImageView);
 		seek = (SeekBar) findViewById(R.id.HistogramSeekBar1);
 		
-		image.setAlpha(127);
-        image.invalidate();
+//		image.setAlpha(127);
+//        image.invalidate();
         
         mCamera = getCameraInstance();
         parameters = mCamera.getParameters();
@@ -94,6 +95,24 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
         Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			locationId = extras.getInt("locationId");
+			
+			//setting photo
+			String whereClause = "dateTime in (SELECT min(dateTime)FROM subjects WHERE locationId = ?)";
+			String[] whereArgs = new String[] { Integer.toString(locationId) };
+			
+			byte[] img = null;
+			
+			Cursor subjectData = HomeActivity.junctionDB.query("subjects", null, whereClause , whereArgs, null, null, null);
+			if (subjectData.getCount() != 0) {
+				int subjectImageColumn = subjectData.getColumnIndex("image");
+				subjectData.moveToFirst();
+				img = subjectData.getBlob(subjectImageColumn);
+				
+				Bitmap bmp = BitmapFactory.decodeByteArray(img,0,img.length);
+				image.setImageBitmap(bmp);
+				image.setAlpha(127);
+				image.invalidate();
+			}
 		}
 		
 		
@@ -166,9 +185,9 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
         	
         	Bitmap bmp = BitmapFactory.decodeByteArray(data,0,data.length);
 //        	ImageView image=new ImageView(this);
-        	image.setImageBitmap(bmp);
-        	
-            image.invalidate();
+//        	image.setImageBitmap(bmp);
+//        	
+//            image.invalidate();
         	
         	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
         	Date date = new Date();
@@ -204,12 +223,23 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 				int locationIdsColumn = userData.getColumnIndex("locationIds");
 				String locationIds = userData.getString(locationIdsColumn);
 				
+				String[] ids = locationIds.split(",");
+				Boolean inArray = false;
 				
-				if (locationIds.length() == 0) {
-					locationIds = Integer.toString(locationId);
-				} else {
-					locationIds += "," + Integer.toString(locationId);
+				for (int i = 0; i < ids.length; i++) {
+					if (Integer.parseInt(ids[i]) == locationId) {
+						inArray = true;
+					}
 				}
+				
+				if (!inArray) {
+					if (locationIds.length() == 0) {
+						locationIds = Integer.toString(locationId);
+					} else {
+						locationIds += "," + Integer.toString(locationId);
+					}
+				}
+				
 	            
 	            cv = new ContentValues();
 	        	cv.put("locationIds", locationIds);
@@ -236,6 +266,10 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 				}
 			}
         	
+			
+			Intent i = new Intent(getApplicationContext(), LocationsMain.class);
+			i.putExtra("locationId", locationId); 
+     	    startActivity(i);
         }
     };
 
