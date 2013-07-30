@@ -2,10 +2,8 @@ package com.example.junction;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -19,9 +17,8 @@ public class MyLocationsStarred extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_locations_starred);
 		
-		String[] ids = null;
-		
 		LinearLayout myStarredLinearLayout = (LinearLayout)findViewById(R.id.myStarredLinearLayout);
+		String[] ids = null;
 
 		String whereClause = "name = ?";
 		String[] whereArgs = new String[] { HomeActivity.username };
@@ -31,7 +28,6 @@ public class MyLocationsStarred extends Activity {
 			userData.moveToFirst();
 			int starIdsColumn = userData.getColumnIndex("starIds");
 			String starIds = userData.getString(starIdsColumn);
-			
 			ids = starIds.split(",");
 		} else {
 			Toast.makeText(getApplicationContext(), "You need to login to see your starred locations", Toast.LENGTH_LONG).show();
@@ -43,17 +39,14 @@ public class MyLocationsStarred extends Activity {
 			whereArgs = ids;
 			
 			Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
-			
 			if (locationData.getCount() != 0) {
 				int titleColumn = locationData.getColumnIndex("title");
-				
 				locationData.moveToFirst();
 				while (locationData.isAfterLast() == false) 
 				{
 					Button locationButton = new Button(this);
 					locationButton.setText(locationData.getString(titleColumn));
 					myStarredLinearLayout.addView(locationButton);
-					
 					locationButton.setOnClickListener(new View.OnClickListener() {
 						
 						@Override
@@ -70,8 +63,7 @@ public class MyLocationsStarred extends Activity {
 							if (locationData.getCount() != 0) {
 								int idColumn = locationData.getColumnIndex("id");
 								locationData.moveToFirst();
-								i.putExtra("locationId", locationData.getInt(idColumn)); 
-								Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+								i.putExtra("locationId", locationData.getInt(idColumn));
 							}
 							startActivity(i);
 						}
@@ -88,5 +80,4 @@ public class MyLocationsStarred extends Activity {
 		getMenuInflater().inflate(R.menu.my_locations_starred, menu);
 		return true;
 	}
-
 }

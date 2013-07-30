@@ -5,18 +5,14 @@ import java.util.List;
 import java.util.Locale;
 
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,22 +26,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class SearchActivityByName extends Activity implements OnClickListener, LocationListener, TextWatcher, OnEditorActionListener {	
-	LocationManager LocManager;
-	Location userLocation;
-	EditText userEntry;
-	String userInput, userGeocode, newUserInput;
-	Geocoder myGeocoder;
-	TextView coordinates;
-	Button goButton;
-	LinearLayout nameSearchLinearLayout;
+public class SearchActivityByName extends Activity implements OnClickListener, TextWatcher, OnEditorActionListener {	
+	private EditText userEntry;
+	private String userInput;
+	private Geocoder myGeocoder;
+	private TextView coordinates;
+	private Button goButton;
+	private LinearLayout nameSearchLinearLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_activity_by_name);
 		
-		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		userEntry = (EditText) findViewById(R.id.userEntry);
 		userEntry.clearFocus();
 		coordinates = (TextView) findViewById(R.id.coords);
@@ -54,20 +47,9 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		goButton.setOnClickListener(this);
 		
 		nameSearchLinearLayout = (LinearLayout) findViewById(R.id.nameSearchLinearLayout);
-		
-		Criteria myCriteria = new Criteria();
-		myCriteria.setAccuracy(Criteria.ACCURACY_FINE);
-		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
-		
-		String bestProvider = LocManager.getBestProvider(myCriteria, true);
-		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		
+
 		myGeocoder = new Geocoder (this, Locale.CANADA);
-		//userInput = userEntry.toString();
-		//userInput = "";
 		coordinates.setText("Address: \n");
-		//getPlace(userInput);
-		
 		userEntry.addTextChangedListener(this);
 	}
 		
@@ -104,10 +86,6 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 						Location dbLocation = new Location("database");
 						dbLocation.setLatitude(Double.parseDouble(locationData.getString(latColumn)));
 						dbLocation.setLongitude(Double.parseDouble(locationData.getString(longColumn)));
-						
-						Log.i("lat", Double.toString(placeLocation.getLatitude()));
-						Log.i("long", Double.toString(placeLocation.getLongitude()));
-						Log.i("long", Float.toString(placeLocation.distanceTo(dbLocation)));
 						
 						if (placeLocation.distanceTo(dbLocation) <= 5000) {
 							Button locationButton = new Button(this);
@@ -161,38 +139,11 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 		getMenuInflater().inflate(R.menu.search_activity_by_name, menu);
 		return true;
 	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		userLocation = location;
-		
-	}
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	@Override
 	public void afterTextChanged(Editable editText) {
-		//if (editText == userEntry.getText()){
-			userInput = userEntry.getText().toString();
-			Log.i("TEXT CHANGED", "text changed");
-			//getPlace(userInput);
-		//}
+		userInput = userEntry.getText().toString();
+		Log.i("TEXT CHANGED", "text changed");
 	}
 
 	@Override
@@ -215,7 +166,6 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 			if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)){
 				InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				in.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-				//getPlace(userInput);
 				return true;
 			}
 		}
@@ -225,11 +175,9 @@ public class SearchActivityByName extends Activity implements OnClickListener, L
 	@Override
 	public void onClick(View v) {
 		if (v == goButton){
-			//if(userInput != ""){
-				InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				mgr.hideSoftInputFromWindow(userEntry.getWindowToken(), 0);
-				getPlace(userInput);
-			//}
+			InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			mgr.hideSoftInputFromWindow(userEntry.getWindowToken(), 0);
+			getPlace(userInput);
 		}
 	}
 }

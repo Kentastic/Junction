@@ -1,4 +1,3 @@
-
 package com.example.junction;
 
 import java.io.IOException;
@@ -24,7 +23,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -45,41 +43,37 @@ import android.widget.ViewSwitcher;
 @SuppressLint("NewApi")
 public class LocationsMain extends FragmentActivity implements LocationListener, OnMarkerClickListener {
 	static public int locationId = -1;
-	Button takePhotoButton, starButton;
-	Boolean newLocation = false;
+	private Boolean newLocation = false;
 	
-	LocationManager LocManager;
-	Location userLocation, destination;
-	String currentLocation, goLocation;
-	Geocoder myGeocoder;
+	private LocationManager LocManager;
+	private Location userLocation, destination;
+	private Geocoder myGeocoder;
+	private String currentLocation, goLocation;
 	
-	MapFragment mapFragment;
- 	GoogleMap myMap;
- 	SupportMapFragment frag;
-	
- 	Marker marker1, marker2;
-	Marker lastOpened = null;
+	private MapFragment mapFragment;
+	private GoogleMap myMap;
+	private SupportMapFragment frag;
+	private Marker marker1, marker2;
+	private Marker lastOpened = null;
+	private LatLngBounds.Builder builder;
  	
-	EditText titleEditText;
-	TextView titleTextView;
-	
-	LatLngBounds.Builder builder;
+	private EditText titleEditText;
+	private TextView titleTextView;
+	private Button takePhotoButton, starButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_locations_main);
 		
+		ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.locationTextViewSwitcher1);
+		ImageView recentImage = (ImageView) findViewById(R.id.locationImageView);
 		titleEditText = (EditText)findViewById(R.id.LocationTitleEditText1);
 		titleTextView = (TextView)findViewById(R.id.locationTitleTextView);
-		
 		takePhotoButton = (Button) findViewById(R.id.takePhotoButton1);
 		takePhotoButton.setOnClickListener(takePhotoButtonListener);
-		
 		starButton = (Button) findViewById(R.id.starButton);
 		starButton.setOnClickListener(takePhotoButtonListener);
-		
-		ImageView recentImage = (ImageView) findViewById(R.id.locationImageView);
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -87,17 +81,15 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 			Log.e("main", Integer.toString(locationId));
 		}
 		
-		ViewSwitcher switcher = (ViewSwitcher) findViewById(R.id.locationTextViewSwitcher1);
-		
 		if (locationId == -1) {
 			switcher.showNext();
+			starButton.setVisibility(View.INVISIBLE);
 			newLocation = true;
 		} else {
 			String whereClause = "id = ?";
 			String[] whereArgs = new String[] { Integer.toString(locationId) };
 			
 			Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
-			
 			if (locationData.getCount() != 0) {
 				int titleColumn = locationData.getColumnIndex("title");
 				locationData.moveToFirst();
@@ -144,13 +136,11 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		String whereClause = "dateTime in (SELECT max(dateTime)FROM subjects WHERE locationId = ?)";
 		String[] whereArgs = new String[] { Integer.toString(locationId) };
 		
-		byte[] img = null;
-		
 		Cursor subjectData = HomeActivity.junctionDB.query("subjects", null, whereClause , whereArgs, null, null, null);
 		if (subjectData.getCount() != 0) {
 			int subjectImageColumn = subjectData.getColumnIndex("image");
 			subjectData.moveToFirst();
-			img = subjectData.getBlob(subjectImageColumn);
+			byte[] img = subjectData.getBlob(subjectImageColumn);
 			
 			Bitmap bmp = BitmapFactory.decodeByteArray(img,0,img.length);
 			recentImage.setImageBitmap(bmp);
@@ -166,12 +156,7 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 			if (v == takePhotoButton) {
 				if (newLocation) {
 					ContentValues cv = new ContentValues();
-					String title = titleEditText.getText().toString();
-					if (title.isEmpty()) {
-						cv.put("title", "");
-					} else {
-						cv.put("title", title);
-					}
+					cv.put("title", titleEditText.getText().toString());
 		        	cv.put("locationName", "");
 		        	cv.put("latitude", "");
 		        	cv.put("longitude", "");

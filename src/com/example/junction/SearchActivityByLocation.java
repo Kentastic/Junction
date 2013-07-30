@@ -35,14 +35,14 @@ import android.widget.TextView;
 
 public class SearchActivityByLocation extends FragmentActivity implements LocationListener {
 	
-	LocationManager LocManager;
-	Location userLocation;
-	TextView userLocationTextView, addressTextView;	 
- 	String geocode;
- 	Geocoder myGeocoder;
- 	MapFragment mapFragment;
- 	GoogleMap myMap;
- 	SupportMapFragment frag;
+	private LocationManager LocManager;
+	private Location userLocation;
+	private TextView userLocationTextView, addressTextView;	 
+	private String geocode;
+	private Geocoder myGeocoder;
+	private MapFragment mapFragment;
+	private GoogleMap myMap;
+	private SupportMapFragment frag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		addressTextView = (TextView) findViewById(R.id.address);
-		//getAddress(userLocation);
+		getAddress(userLocation);
 
 		
 		//Map
@@ -92,8 +92,7 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 		
 		try {
 			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
-			if (addresses != null && !addresses.isEmpty())
-			{
+			if (addresses != null && !addresses.isEmpty()) {
 				StringBuilder userPlace = new StringBuilder("Address: \n");
 				
 				for (int i = 0; i < 5; i++) {
@@ -102,15 +101,11 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 						userPlace.append(myAddress.getAddressLine(j) + "\n");
 					}
 				}
-				
 				addressTextView.setText(userPlace.toString());
-			}
-			else{
+			} else{
 				addressTextView.setText(R.string.noAddress);
 			}
-		}
-		
-		catch (IOException e) {
+		} catch (IOException e) {
 			addressTextView.setText(e.getMessage()); 
 		} 
 	}

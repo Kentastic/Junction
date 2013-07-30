@@ -20,12 +20,9 @@ public class MyLocationGroups extends Activity {
 		
 		LinearLayout myLocationsLinearLayout = (LinearLayout)findViewById(R.id.myLocationsLinearLayout);
 		
-		
 		Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
-
 		if (locationData.getCount() != 0) {
 			int titleColumn = locationData.getColumnIndex("title");
-			
 			locationData.moveToFirst();
 			while (locationData.isAfterLast() == false) 
 			{
@@ -38,8 +35,7 @@ public class MyLocationGroups extends Activity {
 					@Override
 					public void onClick(View v) {
 						Intent i = new Intent(getApplicationContext(), LocationActivity.class);
-						
-						Button b = (Button)v;
+						Button b = (Button) v;
 						
 						String whereClause = "title = ?";
 						String[] whereArgs = new String[] { b.getText().toString() };
@@ -49,7 +45,6 @@ public class MyLocationGroups extends Activity {
 							int idColumn = locationData.getColumnIndex("id");
 							locationData.moveToFirst();
 							i.putExtra("locationId", locationData.getInt(idColumn)); 
-//							Log.e("put", Integer.toString(locationData.getInt(idColumn)));
 						}
 						startActivity(i);
 					}
@@ -57,8 +52,6 @@ public class MyLocationGroups extends Activity {
 				locationData.moveToNext();
 			}
 		}
-		
-		
 	}
 
 	@Override
@@ -67,5 +60,4 @@ public class MyLocationGroups extends Activity {
 		getMenuInflater().inflate(R.menu.my_location_groups, menu);
 		return true;
 	}
-
 }

@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -18,35 +16,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class LoginActivity extends Activity {
-	Boolean isRegistering;
+	private String username, password;
+	private Boolean isRegistering;
 	
-	TextView loginTextView;
-	Button loginButton, registerButton;
-	
-	EditText usernameEditText, passwordEditText;
-	
-	String username, password;
-	
-	LinearLayout loginLinearLayout;
+	private LinearLayout loginLinearLayout;
+	private TextView loginTextView;
+	private EditText usernameEditText, passwordEditText;
+	private Button loginButton, registerButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
-		loginTextView = (TextView) findViewById(R.id.loginTextView1);
+		loginLinearLayout = (LinearLayout) findViewById(R.id.myLoginLinearLayout);
 		loginButton = (Button) findViewById(R.id.loginButton1);
 		loginButton.setOnClickListener(registerButtonListener);
-		
+		loginTextView = (TextView) findViewById(R.id.loginTextView1);
 		usernameEditText = (EditText)findViewById(R.id.usernameEditText1);
 		passwordEditText = (EditText)findViewById(R.id.passwordEditText2);
 		
 		Bundle extras = getIntent().getExtras();
 		isRegistering = extras.getBoolean("registering");
-		
-		loginLinearLayout = (LinearLayout) findViewById(R.id.myLoginLinearLayout);
-		
-		
 		
 		if (isRegistering) {
 			loginTextView.setText("Choose a username and password to register your account");
@@ -66,6 +57,13 @@ public class LoginActivity extends Activity {
 		}
 	}
 	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.login, menu);
+		return true;
+	}
+	
 	View.OnClickListener registerButtonListener = new View.OnClickListener() {
 		
 		@Override
@@ -79,11 +77,8 @@ public class LoginActivity extends Activity {
 				String whereClause = "name = ?";
 				String[] whereArgs = new String[] { username };
 				   
-				
 				Cursor userData = HomeActivity.junctionDB.query("users", null, whereClause , whereArgs, null, null, null);
 				if (userData.getCount() == 0) {
-					Log.e("register", "NONE");
-					
 					ContentValues cv = new ContentValues();
 		        	cv.put("name", username);
 		        	cv.put("password", password);
@@ -101,12 +96,9 @@ public class LoginActivity extends Activity {
 		            Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 					startActivity(i);
 				} else {
-					Log.e("register", "taken");
 					Toast.makeText(getApplicationContext(), "Username has already been taken. Please try another one", Toast.LENGTH_LONG).show();
 				}
 				
-				
-	            
 			} else if (v == loginButton && !isRegistering) {
 				
 				String whereClause = "name = ? AND password = ?";
@@ -114,10 +106,8 @@ public class LoginActivity extends Activity {
 			
 				Cursor userData = HomeActivity.junctionDB.query("users", null, whereClause , whereArgs, null, null, null);
 				if (userData.getCount() == 0) {
-					Log.e("test", "NONE");
 					Toast.makeText(getApplicationContext(), "Incorrect username or password. Try Again", Toast.LENGTH_LONG).show();
 				} else {
-					Log.e("test", "SOME");
 					HomeActivity.username = username;
 
 		            Editor editor = HomeActivity.sharedPrefs.edit();
@@ -137,14 +127,6 @@ public class LoginActivity extends Activity {
 			}
 		}
 	};
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
-	}
-	
 	
 	private class InsertUser extends AsyncTask<String, Void, String> {
 

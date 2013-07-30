@@ -4,15 +4,18 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Camera.Size;
 import android.view.SurfaceHolder;
+import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
-public class CameraPreview extends SurfaceView implements
-        SurfaceHolder.Callback {
+public class CameraPreview extends SurfaceView implements Callback {
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera;
+    private Parameters parameters;
+    private Size pSize;
 
-    // Constructor that obtains context and camera
     @SuppressWarnings("deprecation")
     public CameraPreview(Context context, Camera camera) {
         super(context);
@@ -20,6 +23,9 @@ public class CameraPreview extends SurfaceView implements
         this.mSurfaceHolder = this.getHolder();
         this.mSurfaceHolder.addCallback(this);
         this.mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        
+        parameters = camera.getParameters();
+        pSize = camera.getParameters().getPreviewSize();
     }
 
     @Override
@@ -30,9 +36,8 @@ public class CameraPreview extends SurfaceView implements
         	}
             mCamera.setPreviewDisplay(surfaceHolder);
             mCamera.startPreview();
-            //mCamera.setDisplayOrientation(90);
         } catch (IOException e) {
-            // left blank for now
+        	
         }
     }
 
@@ -43,17 +48,18 @@ public class CameraPreview extends SurfaceView implements
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int format,
-            int width, int height) {
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
         // start preview with new settings
         try {
         	if (mCamera == null) {
         		mCamera = Camera.open();
         	}
             mCamera.setPreviewDisplay(surfaceHolder);
+            parameters.setPreviewSize(pSize.width, pSize.height);
+            mCamera.setParameters(parameters);
             mCamera.startPreview();
         } catch (Exception e) {
-            // intentionally left blank for a test
+        	
         }
     }
 }
