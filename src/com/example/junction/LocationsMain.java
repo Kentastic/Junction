@@ -46,7 +46,7 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 	private Boolean newLocation = false;
 	
 	private LocationManager LocManager;
-	private Location userLocation, destination;
+	private Location userLocation;
 	private Geocoder myGeocoder;
 	private String currentLocation, goLocation;
 	
@@ -108,32 +108,24 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
 		
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
-		
-//		destination = LocManager.getLastKnownLocation(bestProvider);
-//		destination.setLatitude(49.2678317);
-//		destination.setLongitude(-122.7);
 		goLocation = "Your destination";
 		
 		myGeocoder = new Geocoder(this, Locale.CANADA);
 		if (userLocation != null) {
-			//getAddress(userLocation);
+			getAddress(userLocation);
 		}
 		
 		
 		//Map
 		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.directionMap);
 		myMap = frag.getMap();
-		//myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
-	
-		
+
 		myMap.setMyLocationEnabled(true);
 		myMap.setIndoorEnabled(true);
 		myMap.setOnMarkerClickListener(this);
-		
+		double d = userLocation.getLatitude();
 		marker1 = myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title(currentLocation).snippet("You are here"));
-//		marker2 = myMap.addMarker(new MarkerOptions().position(new LatLng(destination.getLatitude(), destination.getLongitude())).title("hmm").snippet(goLocation));
 		builder = new LatLngBounds.Builder();
-		
 		//
 		
 		//setting photo
@@ -152,22 +144,15 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		}
 		
 		if (locationId != -1) {
-			Log.i("test", "1");
 			whereClause = "id = ?";
 			whereArgs = new String[] { Integer.toString(locationId) };
-			Log.i("test", "1");
 			Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
-			Log.i("test", "1");
 			if (locationData.getCount() != 0) {
 				int latColumn = locationData.getColumnIndex("latitude");
 				int longColumn = locationData.getColumnIndex("longitude");
-				Log.i("test", "1");
 				locationData.moveToFirst();
 				
-				
-				Log.i("test", "1");
 				if (!locationData.getString(latColumn).isEmpty()) {
-					Log.i("test", "1");
 					double latitude = Double.parseDouble(locationData.getString(latColumn));
 					double longitude = Double.parseDouble(locationData.getString(longColumn));
 					marker2 = myMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("location").snippet(goLocation));
@@ -248,31 +233,31 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		}
 	};
 	
-//	private void getAddress(Location location) {
-//		Address myAddress = new Address(Locale.CANADA);
-//		
-//		try {
-//			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-//			if (addresses != null && !addresses.isEmpty())
-//			{
-//				StringBuilder userPlace = new StringBuilder();
-//				myAddress = addresses.get(0);
-//				
-//				for (int i = 0; i < 3; i++) {
-//					userPlace.append(myAddress.getAddressLine(i) + "\n");
-//				}
-//				
-//				currentLocation = userPlace.toString();
-//			}
-//			else{
-//				currentLocation = "Cannot find current location";
-//			}
-//		}
-//		
-//		catch (IOException e) {
-//			currentLocation = (e.getMessage()); 
-//		} 
-//	}
+	private void getAddress(Location location) {
+		Address myAddress = new Address(Locale.CANADA);
+		
+		try {
+			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+			if (addresses != null && !addresses.isEmpty())
+			{
+				StringBuilder userPlace = new StringBuilder();
+				myAddress = addresses.get(0);
+				
+				for (int i = 0; i < 3; i++) {
+					userPlace.append(myAddress.getAddressLine(i) + "\n");
+				}
+				
+				currentLocation = userPlace.toString();
+			}
+			else{
+				currentLocation = "Cannot find current location";
+			}
+		}
+		
+		catch (IOException e) {
+			currentLocation = (e.getMessage()); 
+		} 
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -284,7 +269,6 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 	@Override
 	public void onLocationChanged(Location location) {
 		userLocation = location;
-
 		builder.include(marker1.getPosition());
 		if (marker2 != null) {
 			builder.include(marker2.getPosition());
@@ -295,7 +279,6 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		
 		int padding = 100; // offset from edges of the map in pixels
 		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-
 		myMap.moveCamera(cu);
 	}
 

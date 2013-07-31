@@ -20,12 +20,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class HomeActivity extends Activity implements OnClickListener {
-	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton, loginButton;
+	public Button searchActivityButton, cameraActivityButton, newLocationActivityButton, loginButton, registerButton;
 	public static SQLiteDatabase junctionDB;
 	public static String username;
 	public static SharedPreferences sharedPrefs;
@@ -46,6 +47,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 		newLocationActivityButton.setOnClickListener(this);
 		loginButton = (Button) findViewById(R.id.homeLoginButton);
 		loginButton.setOnClickListener(this);
+		registerButton = (Button) findViewById(R.id.homeRegisterButton);
 		
 		junctionDB = openOrCreateDatabase("junction", SQLiteDatabase.CREATE_IF_NECESSARY, null);
 		junctionDB.setLocale(Locale.getDefault());
@@ -72,7 +74,13 @@ public class HomeActivity extends Activity implements OnClickListener {
 		if (username.isEmpty()) {
 	        cameraActivityButton.setVisibility(View.INVISIBLE);
 	        newLocationActivityButton.setVisibility(View.INVISIBLE);
+	        
+	        ((LinearLayout)cameraActivityButton.getParent()).removeView(cameraActivityButton);
+	        ((LinearLayout)newLocationActivityButton.getParent()).removeView(newLocationActivityButton);
+	        registerButton.setOnClickListener(this);
+	        
 		} else {
+			registerButton.setVisibility(View.INVISIBLE);
 			Toast.makeText(getApplicationContext(), "Logged in as " + username, Toast.LENGTH_LONG).show();
 			loginButton.setText("Logout");
 			
@@ -138,6 +146,12 @@ public class HomeActivity extends Activity implements OnClickListener {
 				Intent i = new Intent(this, HomeActivity.class);
 	     	    startActivity(i);
 			}
+		}
+		
+		if(v == registerButton){
+			Intent i = new Intent(this, LoginActivity.class);
+     	    i.putExtra("registering", true); 
+     	    startActivity(i);
 		}
 	}
 }

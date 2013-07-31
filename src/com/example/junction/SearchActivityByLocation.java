@@ -1,14 +1,18 @@
 package com.example.junction;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.support.v4.app.Fragment;
@@ -40,9 +44,6 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	
 	private LocationManager LocManager;
 	private Location userLocation;
-	private TextView userLocationTextView, addressTextView;	 
-	private String geocode;
-	private Geocoder myGeocoder;
 	private MapFragment mapFragment;
 	private GoogleMap myMap;
 	private SupportMapFragment frag;
@@ -52,35 +53,28 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_activity_by_location);
-
 		locationSearchLinearLayout = (LinearLayout) findViewById(R.id.locationSearchLinearLayout);
 
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
 		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
-
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
-
+		
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
 
-		myGeocoder = new Geocoder(this, Locale.CANADA);
-		//addressTextView = (TextView) findViewById(R.id.address);
-		
-		if (userLocation != null) {
-//			getAddress(userLocation);
-			getPlace();
-		}
-
-		
 		//Map
 		frag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		myMap = frag.getMap();
 		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 		myMap.setMyLocationEnabled(true);
 		myMap.setIndoorEnabled(true);
-		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("A. Location Group").snippet("Currently here"));
+		myMap.addMarker(new MarkerOptions().position(new LatLng(userLocation.getLatitude(), userLocation.getLongitude())).title("Current Location").snippet("Currently here"));
+		
+		if (userLocation != null) {
+			getPlace();
+		}
 	}
 
 	@Override
@@ -98,33 +92,25 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	}
 	
 	private void getPlace() {
-		
-		
 		//get locations
 		Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
-		Log.i("test", "1");
 		if (locationData.getCount() != 0) {
 			int latColumn = locationData.getColumnIndex("latitude");
 			int longColumn = locationData.getColumnIndex("longitude");
 			int titleColumn = locationData.getColumnIndex("title");
-			Log.i("test", "2");
-			
+
 			locationData.moveToFirst();
 			while (locationData.isAfterLast() == false) 
 			{
-				Log.i("test", "3");
 				Location dbLocation = new Location("database");
 				if (!locationData.getString(latColumn).isEmpty()) {
 					dbLocation.setLatitude(Double.parseDouble(locationData.getString(latColumn)));
 					dbLocation.setLongitude(Double.parseDouble(locationData.getString(longColumn)));
-					
-					Log.i("test", Float.toString(userLocation.distanceTo(dbLocation)));
+
 					if (userLocation.distanceTo(dbLocation) <= 5000) {
-						Log.i("test", "4");
 						Button locationButton = new Button(this);
 						locationButton.setText(locationData.getString(titleColumn));
 						locationSearchLinearLayout.addView(locationButton);
-						
 						locationButton.setOnClickListener(new View.OnClickListener() {
 							
 							@Override
@@ -141,41 +127,17 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 									int idColumn = locationData.getColumnIndex("id");
 									locationData.moveToFirst();
 									i.putExtra("locationId", locationData.getInt(idColumn)); 
-									Log.e("put", Integer.toString(locationData.getInt(idColumn)));
 								}
 								startActivity(i);
 							}
 						});
+						myMap.addMarker(new MarkerOptions().position(new LatLng(dbLocation.getLatitude(), dbLocation.getLongitude())).title(locationData.getString(titleColumn)).snippet("Location"));
 					}
 				}
-				
 				locationData.moveToNext();
 			}
 		}
 	}
-
-//	private void getAddress(Location location) {
-//		Address myAddress = new Address(Locale.CANADA);
-//		
-//		try {
-//			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
-//			if (addresses != null && !addresses.isEmpty()) {
-//				StringBuilder userPlace = new StringBuilder("Address: \n");
-//				
-//				for (int i = 0; i < 5; i++) {
-//					myAddress = addresses.get(i);
-//					for(int j = 0; j < 5; j++){
-//						userPlace.append(myAddress.getAddressLine(j) + "\n");
-//					}
-//				}
-////				addressTextView.setText(userPlace.toString());
-//			} else{
-////				addressTextView.setText(R.string.noAddress);
-//			}
-//		} catch (IOException e) {
-////			addressTextView.setText(e.getMessage()); 
-//		} 
-//	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
