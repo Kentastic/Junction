@@ -29,7 +29,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,30 +46,31 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	private MapFragment mapFragment;
 	private GoogleMap myMap;
 	private SupportMapFragment frag;
+	private LinearLayout locationSearchLinearLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_activity_by_location);
+
+		locationSearchLinearLayout = (LinearLayout) findViewById(R.id.locationSearchLinearLayout);
+
 		LocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		userLocationTextView = (TextView) findViewById(R.id.coords);
 		Criteria myCriteria = new Criteria();
 		myCriteria.setAccuracy(Criteria.NO_REQUIREMENT);
 		myCriteria.setPowerRequirement(Criteria.POWER_LOW);
 
 		String bestProvider = LocManager.getBestProvider(myCriteria, true);
 		userLocation = LocManager.getLastKnownLocation(bestProvider);
-		if (userLocation != null) {
-			userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
-		}
-		
+
 		LocManager.requestLocationUpdates(bestProvider, 500, 20.0f, this);
 
 		myGeocoder = new Geocoder(this, Locale.CANADA);
-		addressTextView = (TextView) findViewById(R.id.address);
+		//addressTextView = (TextView) findViewById(R.id.address);
 		
 		if (userLocation != null) {
-			getAddress(userLocation);
+//			getAddress(userLocation);
+			getPlace();
 		}
 
 		
@@ -89,32 +93,89 @@ public class SearchActivityByLocation extends FragmentActivity implements Locati
 	@Override
 	public void onLocationChanged(Location location) {
 		userLocation = location;
-		userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
+		//userLocationTextView.setText("Latitude: " + userLocation.getLatitude() + "\nLongitude: " + userLocation.getLongitude());
 		myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 13.0f));
 	}
-
-	private void getAddress(Location location) {
-		Address myAddress = new Address(Locale.CANADA);
+	
+	private void getPlace() {
 		
-		try {
-			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
-			if (addresses != null && !addresses.isEmpty()) {
-				StringBuilder userPlace = new StringBuilder("Address: \n");
-				
-				for (int i = 0; i < 5; i++) {
-					myAddress = addresses.get(i);
-					for(int j = 0; j < 5; j++){
-						userPlace.append(myAddress.getAddressLine(j) + "\n");
+		
+		//get locations
+		Cursor locationData = HomeActivity.junctionDB.query("locations", null, null , null, null, null, null);
+		Log.i("test", "1");
+		if (locationData.getCount() != 0) {
+			int latColumn = locationData.getColumnIndex("latitude");
+			int longColumn = locationData.getColumnIndex("longitude");
+			int titleColumn = locationData.getColumnIndex("title");
+			Log.i("test", "2");
+			
+			locationData.moveToFirst();
+			while (locationData.isAfterLast() == false) 
+			{
+				Log.i("test", "3");
+				Location dbLocation = new Location("database");
+				if (!locationData.getString(latColumn).isEmpty()) {
+					dbLocation.setLatitude(Double.parseDouble(locationData.getString(latColumn)));
+					dbLocation.setLongitude(Double.parseDouble(locationData.getString(longColumn)));
+					
+					Log.i("test", Float.toString(userLocation.distanceTo(dbLocation)));
+					if (userLocation.distanceTo(dbLocation) <= 5000) {
+						Log.i("test", "4");
+						Button locationButton = new Button(this);
+						locationButton.setText(locationData.getString(titleColumn));
+						locationSearchLinearLayout.addView(locationButton);
+						
+						locationButton.setOnClickListener(new View.OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								Intent i = new Intent(getApplicationContext(), LocationActivity.class);
+								
+								Button b = (Button)v;
+								
+								String whereClause = "title = ?";
+								String[] whereArgs = new String[] { b.getText().toString() };
+								
+								Cursor locationData = HomeActivity.junctionDB.query("locations", null, whereClause , whereArgs, null, null, null);
+								if (locationData.getCount() != 0) {
+									int idColumn = locationData.getColumnIndex("id");
+									locationData.moveToFirst();
+									i.putExtra("locationId", locationData.getInt(idColumn)); 
+									Log.e("put", Integer.toString(locationData.getInt(idColumn)));
+								}
+								startActivity(i);
+							}
+						});
 					}
 				}
-				addressTextView.setText(userPlace.toString());
-			} else{
-				addressTextView.setText(R.string.noAddress);
+				
+				locationData.moveToNext();
 			}
-		} catch (IOException e) {
-			addressTextView.setText(e.getMessage()); 
-		} 
+		}
 	}
+
+//	private void getAddress(Location location) {
+//		Address myAddress = new Address(Locale.CANADA);
+//		
+//		try {
+//			List<Address> addresses = myGeocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 5);
+//			if (addresses != null && !addresses.isEmpty()) {
+//				StringBuilder userPlace = new StringBuilder("Address: \n");
+//				
+//				for (int i = 0; i < 5; i++) {
+//					myAddress = addresses.get(i);
+//					for(int j = 0; j < 5; j++){
+//						userPlace.append(myAddress.getAddressLine(j) + "\n");
+//					}
+//				}
+////				addressTextView.setText(userPlace.toString());
+//			} else{
+////				addressTextView.setText(R.string.noAddress);
+//			}
+//		} catch (IOException e) {
+////			addressTextView.setText(e.getMessage()); 
+//		} 
+//	}
 
 	@Override
 	public void onProviderDisabled(String provider) {

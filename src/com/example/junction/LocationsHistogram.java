@@ -3,6 +3,7 @@ package com.example.junction;
 import java.util.ArrayList;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,6 +77,11 @@ public class LocationsHistogram extends Activity {
 		getMenuInflater().inflate(R.menu.locations_histogram, menu);
 		return true;
 	}
+	
+	public void onBackPressed() {
+		Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+ 	    startActivity(i);
+	};
 	
 	OnSeekBarChangeListener histogramSeekListener = new OnSeekBarChangeListener() {
 		

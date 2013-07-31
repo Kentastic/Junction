@@ -14,9 +14,10 @@
     <ScrollView
         android:id="@+id/ScrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent" >
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
@@ -24,14 +25,16 @@
             <ViewSwitcher
                 android:id="@+id/locationTextViewSwitcher1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" >
 
                 <TextView
                     android:id="@+id/locationTitleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Title"
-                    android:textSize="24sp" />
+                    android:textSize="32sp" />
 
                 <EditText
                     android:id="@+id/LocationTitleEditText1"
@@ -44,42 +47,42 @@
                 </EditText>
             </ViewSwitcher>
 
-            <FrameLayout
-                android:id="@+id/frameLayout1"
+            <ImageView
+                android:id="@+id/locationImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" >
+                android:layout_below="@id/locationTextViewSwitcher1" />
 
-                <ImageView
-                    android:id="@+id/locationImageView"
+            <LinearLayout
+                android:id="@+id/linearLayoutMain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/locationImageView" >
+
+                <Button
+                    android:id="@+id/takePhotoButton1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
-                    android:src="@drawable/icon" />
+                    android:text="Take Photo" />
 
-            </FrameLayout>
-
-            <Button
-                android:id="@+id/takePhotoButton1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="66dp"
-                android:text="Take Photo" />
-
-            <Button
-                android:id="@+id/starButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="26dp"
-                android:text="Star Location" />
+                <Button
+                    android:id="@+id/starButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Star Location" />
+            </LinearLayout>
 
             <fragment
                 android:id="@+id/directionMap"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="192dp" />
+                android:layout_height="300dp"
+                android:layout_below="@id/linearLayoutMain"
+                android:layout_weight="0.64" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </ScrollView>
 

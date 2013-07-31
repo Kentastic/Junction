@@ -196,15 +196,17 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 				int locationIdsColumn = userData.getColumnIndex("locationIds");
 				String locationIds = userData.getString(locationIdsColumn);
 				
-				String[] ids = locationIds.split(",");
 				Boolean inArray = false;
-				
-				if (ids.length > 1) {
-					for (int i = 0; i < ids.length; i++) {
-						if (Integer.parseInt(ids[i]) == locationId) {
-							inArray = true;
+				if (!locationIds.isEmpty()) {
+					String[] ids = locationIds.split(",");
+					
+					if (ids.length > 0) {
+						for (int i = 0; i < ids.length; i++) {
+							if (Integer.parseInt(ids[i]) == locationId) {
+								inArray = true;
+							}
 						}
-					}
+					} 
 				}
 				
 				if (!inArray) {
@@ -239,7 +241,7 @@ public class CameraActivity extends Activity implements LocationListener, OnClic
 				}
 			}
         	
-			Intent i = new Intent(getApplicationContext(), LocationsMain.class);
+			Intent i = new Intent(getApplicationContext(), LocationActivity.class);
 			i.putExtra("locationId", locationId); 
      	    startActivity(i);
         }

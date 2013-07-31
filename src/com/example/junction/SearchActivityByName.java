@@ -44,7 +44,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, T
 		
 		userEntry = (EditText) findViewById(R.id.userEntry);
 		userEntry.clearFocus();
-		coordinates = (TextView) findViewById(R.id.coords);
+		coordinates = (TextView) findViewById(R.id.nameSearchDetails);
 		goButton = new Button(this);
 		goButton = (Button) findViewById(R.id.goButton);
 		goButton.setOnClickListener(this);
