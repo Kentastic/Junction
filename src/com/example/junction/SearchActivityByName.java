@@ -52,7 +52,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, T
 		nameSearchLinearLayout = (LinearLayout) findViewById(R.id.nameSearchLinearLayout);
 
 		myGeocoder = new Geocoder (this, Locale.CANADA);
-		coordinates.setText("Address: \n");
+		coordinates.setText("Type the name of a location to find: \n");
 		userEntry.addTextChangedListener(this);
 	}
 		
@@ -63,7 +63,7 @@ public class SearchActivityByName extends Activity implements OnClickListener, T
 			List<Address> userList = myGeocoder.getFromLocationName(string, 1);
 			if (userList!= null && !userList.isEmpty()){
 				userAddress = userList.get(0);
-				StringBuilder userPlace = new StringBuilder("Address: \n");
+				StringBuilder userPlace = new StringBuilder("Locations Near: \n");
 				
 				for (int i = 0; i < userAddress.getMaxAddressLineIndex(); i++) {
 					userPlace.append(userAddress.getAddressLine(i) + "\n");
