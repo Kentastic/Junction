@@ -151,6 +151,12 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		}
 	}
 	
+	
+	public void onBackPressed() {
+		Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+ 	    startActivity(i);
+	};
+	
 	View.OnClickListener takePhotoButtonListener = new View.OnClickListener() {
 		
 		@Override
@@ -184,17 +190,18 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 					int starIdsColumn = userData.getColumnIndex("starIds");
 					String starIds = userData.getString(starIdsColumn);
 					
-					String[] ids = starIds.split(",");
 					Boolean inArray = false;
-					
-					if (ids.length > 1) {
-						for (int i = 0; i < ids.length; i++) {
-							if (Integer.parseInt(ids[i]) == locationId) {
-								inArray = true;
+					if (!starIds.isEmpty()) {
+						String[] ids = starIds.split(",");
+						
+						if (ids.length > 0) {
+							for (int i = 0; i < ids.length; i++) {
+								if (Integer.parseInt(ids[i]) == locationId) {
+									inArray = true;
+								}
 							}
-						}
+						} 
 					}
-					
 					
 					if (!inArray) {
 						if (starIds.length() == 0) {
@@ -207,6 +214,7 @@ public class LocationsMain extends FragmentActivity implements LocationListener,
 		            ContentValues cv = new ContentValues();
 		        	cv.put("starIds", starIds);
 		            HomeActivity.junctionDB.update("users", cv, whereClause, whereArgs);
+		            Toast.makeText(getApplicationContext(), "Location added to Stars", Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(getApplicationContext(), "You need to login before starring a location", Toast.LENGTH_LONG).show();
 				}
